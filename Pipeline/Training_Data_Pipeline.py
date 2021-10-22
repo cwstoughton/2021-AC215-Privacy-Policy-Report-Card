@@ -8,7 +8,15 @@ import string
 
 data = pd.read_csv(os.path.normpath('../Data/Labeled_Data.csv'))
 x = data.segment_text
-y = data.IDENTIFIER
+y = data[[
+    'IDENTIFIER',
+    '3RD',
+    'LOCATION',
+    'DEMOGRAPHIC',
+    'CONTACT',
+    'SSO']]
+
+
 y = y.astype(int)
 
 x_train, x_test, y_train, y_test = train_test_split(x,y)
@@ -38,37 +46,3 @@ text_vectorizer.adapt(text_data.batch(64))
 
 x_train = text_vectorizer.apply(x_train)
 x_test = text_vectorizer.apply(x_test)
-
-
-"""
-def vectorize_text(text, vectorizer=text_vectorizer, label=None):
-  text = tf.expand_dims(text, -1)
-  text = vectorizer(text)
-  if label is None:
-    return text
-  else:
-    return text, label
-
-# Create TF Dataset
-train_data = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-validation_data = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-
-#############
-# Train data
-#############
-
-
-train_data = train_data.shuffle(buffer_size=TRAIN_SHUFFLE_BUFFER_SIZE)
-train_data = train_data.batch(BATCH_SIZE)
-train_data = train_data.map(vectorize_text, num_parallel_calls=AUTOTUNE)
-train_data = train_data.prefetch(buffer_size=AUTOTUNE)
-
-##################
-# Validation data
-##################
-validation_data = validation_data.shuffle(buffer_size=VALIDATION_SHUFFLE_BUFFER_SIZE)
-validation_data = validation_data.batch(BATCH_SIZE)
-validation_data = validation_data.map(vectorize_text, num_parallel_calls=AUTOTUNE)
-validation_data = validation_data.prefetch(buffer_size=AUTOTUNE)
-
-"""
