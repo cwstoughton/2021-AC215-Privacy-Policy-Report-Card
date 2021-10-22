@@ -63,7 +63,7 @@ for tag in tags:
     APP_350[col_name] = APP_350['annotations'].apply(parse_annotations, args=[tag])
 
 
-categories = ['3RD_PARTY',
+categories = ['3RD',
               'LOCATION',
               'DEMOGRAPHIC',
               'CONTACT',
