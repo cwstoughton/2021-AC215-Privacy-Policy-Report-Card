@@ -6,11 +6,12 @@ from tensorflow.keras.models import Model, Sequential
 import Pipeline.Training_Data_Pipeline as preprocessed
 
 #import matplotlib.pyplot as plt
+y_label = "IDENTIFIER"
 
 x_train = preprocessed.x_train
 x_test  = preprocessed.x_test
-y_train = preprocessed.y_train
-y_test  = preprocessed.y_test
+y_train = preprocessed.y_train["IDENTIFIER"]
+y_test  = preprocessed.y_test["IDENTIFIER"]
 
 
 def model_plot(training_results):
