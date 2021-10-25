@@ -12,11 +12,13 @@ python-dotenv = ">=0.5.1"
 # black = "*"
 pytest = "*"
 Sphinx = "*"
-tensorflow = "*"
+#tensorflow = "*"
 pandas = "*"
 numpy = "*"
 bs4 = "*"
 lxml = "*"
+transformers = "*"
+jupyter = "*"
 
 [dev-packages]
 
