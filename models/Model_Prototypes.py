@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Model, Sequential
 import Pipeline.Training_Data_Pipeline as preprocessed
+from sklearn.metrics import confusion_matrix
 
 #import matplotlib.pyplot as plt
 y_label = "IDENTIFIER"
