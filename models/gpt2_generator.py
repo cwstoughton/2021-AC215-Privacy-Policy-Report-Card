@@ -36,7 +36,7 @@ tokenizer = GPT2Tokenizer.from_pretrained("distilgpt2")
 
 # Dowload trained model on 100 epochs and full dataset (takes around 3 hours to train)
 # start_time = time.time()
-# download_file("https://github.com/dlops-io/models/releases/download/v1.0/distilgpt2_covid.zip", base_path="models", extract=True)
+download_file("https://github.com/dlops-io/models/releases/download/v1.0/distilgpt2_covid.zip", base_path="models", extract=True)
 # execution_time = (time.time() - start_time)/60.0
 # print("Download execution time (mins)",execution_time)
 
