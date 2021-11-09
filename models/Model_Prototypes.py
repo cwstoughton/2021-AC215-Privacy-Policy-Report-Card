@@ -7,7 +7,7 @@ import Pipeline.Training_Data_Pipeline as preprocessed
 from sklearn.metrics import confusion_matrix
 
 #import matplotlib.pyplot as plt
-y_label = "IDENTIFIER"
+y_label = "CONTACT"
 
 x_train = preprocessed.x_train
 x_test  = preprocessed.x_test
@@ -69,6 +69,6 @@ embedding_dim = 100
 optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
 loss = keras.losses.BinaryCrossentropy()
 
-model = binary_cnn_with_embeddings(1500,25000, embedding_dim)
-model.compile(optimizer = optimizer, loss = loss, metrics = 'binary_accuracy')
-model.fit(x = x_train, y = y_train.values, validation_data = (x_test, y_test), epochs = 5, use_multiprocessing = True)
+#model = binary_cnn_with_embeddings(1500,25000, embedding_dim)
+#model.compile(optimizer = optimizer, loss = loss, metrics = 'binary_accuracy')
+#model.fit(x = x_train, y = y_train.values, validation_data = (x_test, y_test), epochs = 4, use_multiprocessing = True, class_weight={0:1, 1:4})
