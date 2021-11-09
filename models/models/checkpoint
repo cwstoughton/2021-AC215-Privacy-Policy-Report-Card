@@ -1,0 +1,2 @@
+model_checkpoint_path: "Prototype_Model_Weights"
+all_model_checkpoint_paths: "Prototype_Model_Weights"
