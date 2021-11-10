@@ -18,9 +18,9 @@ EXPOSE 9000
     
 WORKDIR /app
 
-ADD --chown=app:app Pipfile Pipfile.lock /app/
+ADD --chown=app:app Pipfile /app/
 
-RUN pipenv sync
+RUN pipenv install
 
 ADD --chown=app:app . /app
 

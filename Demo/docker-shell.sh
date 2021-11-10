@@ -6,7 +6,7 @@ set -e
 # Define some environment variables
 # Automatic export to the environment of subsequently executed commands
 # source: the command 'help export' run in Terminal
-export IMAGE_NAME="fastapi_with_model_prediction"
+export IMAGE_NAME="demo_fastapi_with_model_prediction"
 export BASE_DIR=$(pwd)
 
 # Build the image based on the Dockerfile
