@@ -21,7 +21,7 @@ class backend_model:
         text = standardize_text(input_text)
         text_vector = text_vectorizer(text)
         text_vector = np.array([text_vector,])
-        prediction = {name:self.models[name].predict(text_vector)[0][0] for name in self.models.keys()}
+        prediction = {name:float(self.models[name].predict(text_vector)[0][0]) for name in self.models.keys()}
 
         return prediction
 
