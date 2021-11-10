@@ -1,8 +1,7 @@
 import tensorflow as tf
 import os
 import numpy as np
-from demo_model_builder import binary_cnn_with_embeddings
-from Pipeline.Training_Data_Pipeline import standardize_text, text_vectorizer
+from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
 
 
 class backend_model:
