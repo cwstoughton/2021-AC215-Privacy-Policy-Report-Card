@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from models.inference_backend import model
-# from models.gpt2_generator import generate_text
+from demo_inference_backend import model
+
 
 app = FastAPI()
 
