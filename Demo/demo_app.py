@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from demo_inference_backend import model
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,10 +27,30 @@ predictions = [
 
 
 
+@app.get("/", response_class=HTMLResponse)
+def index():
+    return """<!DOCTYPE html>
+<html>
+    <head>
+        <title>🍄 Privacy Policy Report Card Demo </title>
+    </head>
+    <body>
+        🍄 Welcome to the Privacy Policy Report Card App!
+        <br><br>
+        <a href="http://localhost:3000">Click here to start</a>
+    </body>
+</html>
+"""
+#
+# @app.get("/predict")
+# async def predict(input_text: str):
+#     # return model.single_prediction(input_text)
+#     return { "data": predictions }
+
+
 @app.get("/predict")
-async def predict(input_text: str):
-    # return model.single_prediction(input_text)
-    return { "data": todos }
+async def get_predictions():
+    return { "data": predictions }
 
 @app.post("/predict")
 async def predict(input_text: str):
@@ -38,7 +59,7 @@ async def predict(input_text: str):
     result["input_text"]=input_text
     result["predictions"]=model.single_prediction(input_text)
     predictions.append(result)
-    print(predictions)
+    # print(predictions)
     return model.single_prediction(input_text)
 
 @app.get("/todo", tags=["todos"])

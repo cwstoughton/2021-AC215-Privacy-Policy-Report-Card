@@ -36,7 +36,6 @@ export default function Todos() {
       <Stack spacing={5}>
         {todos.map((todo) => (
           <b>{todo.input_text} : {JSON.stringify(todo.predictions)}</b>
-          // <b>{todo.IDENTIFIER}</b>
         ))}
       </Stack>
     </TodosContext.Provider>
@@ -56,9 +55,6 @@ function AddTodo() {
       "text": todos.length + 1,
       "item": item
     }
-    // const encodedValue = encodeURIComponent(someVariable);
-    // fetch(`https://example.com/foo?bar=${encodedValue}`);
-
 
     fetch(`http://localhost:9000/predict?input_text=${encodeURIComponent(newTodo.item)}`, {
       method: "POST",
