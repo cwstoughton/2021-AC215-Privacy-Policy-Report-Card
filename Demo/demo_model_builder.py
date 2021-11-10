@@ -29,7 +29,7 @@ def binary_cnn_with_embeddings(sequence_length, vocab_size, embedding_dim,
 
 
 
-data = pd.read_csv(os.path.normpath('Demo_Data.csv.csv'))
+data = pd.read_csv(os.path.normpath('Demo_Data.csv'))
 x = data.segment_text
 y = data[[
     'IDENTIFIER',
