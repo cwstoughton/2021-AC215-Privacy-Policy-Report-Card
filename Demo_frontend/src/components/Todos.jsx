@@ -56,7 +56,7 @@ function AddTodo() {
       "item": item
     }
 
-    fetch(`http://localhost:9000/predict?input_text=${encodeURIComponent(newTodo.item)}`, {
+    fetch(`http://localhost:9000/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // body: newTodo.item
