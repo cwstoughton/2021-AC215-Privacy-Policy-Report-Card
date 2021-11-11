@@ -16,5 +16,5 @@ docker build -t $IMAGE_NAME -f Dockerfile .
 # --mount: Attach a filesystem mount to the container
 # -p: Publish a container's port(s) to the host (host_port: container_port) (source: https://dockerlabs.collabnix.com/intermediate/networking/ExposingContainerPort.html)
 docker run --rm --name $IMAGE_NAME -ti \
--p 9000:9000 $IMAGE_NAME 
+-p 9000:9000 --net=bridge $IMAGE_NAME
 
