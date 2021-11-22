@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import pandas as pd
-
+import os
 
 """
 1. take a url as input and make it into a bs4 soup object
@@ -159,10 +159,26 @@ def create_df(urls):
 
     return df
 
+def create_docs(urls, save_directory):
+    for i, url in enumerate(urls):
+        try:
+            soup = make_soup(url)
+            paragraphs = find_paragraphs(soup)
+            paragraphs_list = [p.text for p in paragraphs]
+            for idx, par in enumerate(paragraphs_list):
+                if len(par.split()) > 2:
+                    name = 'policy_index_'+str(i) + '_paragraph_' + str(idx) +'.txt'
+                    filepath = os.path.join(save_directory, name)
+                    with open (filepath, 'w+') as destination:
+                        destination.write(par)
+
+        except:
+            print('error at index', i, url)
+            pass
 
 if __name__ == '__main__':
-    path_to_policy_urls_csv = './Data/policy_urls/april_2018_policies.csv'
-    num_policies_to_extract = 100
+    path_to_policy_urls_csv = os.path.normpath('../Data/policy_urls/april_2018_policies.csv')
+    num_policies_to_extract = 10
     # load the privacy policies URL csv file
     df_policies = pd.read_csv(path_to_policy_urls_csv)
     # print(df_policies.head(5))
@@ -175,10 +191,12 @@ if __name__ == '__main__':
     urls = [item.split("'Final URL': '")[1].split("'}")[0] for item in df_policies['Policy Sources']]
     # print(urls)
     # Create a dataframe with the policy texts
-    df = create_df(urls)
-    print(df.head())
-    print(f"DataFrame consists of {df.shape[0]} paragraphs from {num_policies_to_extract} policies.")
+    #df = create_df(urls)
+   # print(df.head())
+    #print(f"DataFrame consists of {df.shape[0]} paragraphs from {num_policies_to_extract} policies.")
 
     # Save dataframe as csv file
-    df.to_csv('policy_texts.csv')
+    #df.to_csv('policy_texts.csv')
+
+    create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
 
