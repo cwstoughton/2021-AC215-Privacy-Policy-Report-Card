@@ -27,15 +27,28 @@ class backend_model:
         return prediction
 
     def policy_prediction(self, url):
-        final_preds = {name: [] for name in self.models.keys()}
         paragraphs = HTML_Parser.parse_policy(url)
+        if len(paragraphs) > 1:
+            df = pd.DataFrame(columns=['Text'])
+            df['Text'] = paragraphs
+            df['Standardized'] = standardize_text(df['Text'])
+            text_vector = text_vectorizer(df['Standardized'])
 
-        for paragraph in paragraphs:
-            prediction = self.single_prediction(paragraph)
+            for m in self.models.keys():
+                df[m] = self.models[m].predict(text_vector)
 
-            for category in prediction:
-                if prediction[category] >= 0.5:
-                    final_preds[category].append(paragraph)
+            final_preds = {name:
+                               list(df[df[name] > 0.5]['Text']
+                                    ) for name in self.models.keys()}
+
+        else:
+            final_preds = {name: [] for name in self.models.keys()}
+            for paragraph in paragraphs:
+                prediction = self.single_prediction(paragraph)
+
+                for category in prediction:
+                    if prediction[category] >= 0.5:
+                        final_preds[category].append(paragraph)
 
         return final_preds
 
