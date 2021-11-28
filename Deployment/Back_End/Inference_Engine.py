@@ -43,7 +43,7 @@ class backend_model:
         return final_preds
 
 def bayes_score(confusion_matrix, n_detected):
-    tn, fp, fn, tp = confusion_matrix([0, 1, 0, 1], [1, 1, 1, 0]).ravel()
+    tn, fp, fn, tp = confusion_matrix.ravel()
     total = sum([tn,fn,tp,tn])
 
     pb = (tp+fn) / total
