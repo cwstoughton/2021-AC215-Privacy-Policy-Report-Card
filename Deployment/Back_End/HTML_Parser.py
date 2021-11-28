@@ -1,4 +1,4 @@
-rom bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 """
 1. take a url as input and make it into a bs4 soup object
