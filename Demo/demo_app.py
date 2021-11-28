@@ -25,11 +25,6 @@ app.add_middleware(
 )
 
 
-predictions = [
-    # {"input_text":"We collect cookiesss","predictions":{"IDENTIFIERS":0.04112809896469116,"LOCATION":0.020514369010925293,"3RD_PARTY":0.1350472867488861}}
-]
-
-
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -58,13 +53,16 @@ async def get_predictions():
 
 @app.post("/predict_new")
 async def predict(input_text: str):
-    print(input_text)
+   # print(input_text)
     result = dict()
     result["input_text"]=input_text
     result["predictions"]=model.single_prediction(input_text)
-    predictions.append(result)
     # print(predictions)
     return model.single_prediction(input_text)
+
+@app.post('/parse_url')
+async def analyze_policy(url):
+    return model.policy_prediction(url)
 
 @app.get("/todo", tags=["todos"])
 async def get_todos() -> dict:
