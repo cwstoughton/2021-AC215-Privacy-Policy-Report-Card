@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
+import dask
+import dask.dataframe
 
 """
 1. take a url as input and make it into a bs4 soup object
@@ -176,9 +178,27 @@ def create_docs(urls, save_directory):
             print('error at index', i, url)
             pass
 
+
+def create_dask_df(urls):
+    df = dask.dataframe.DataFrame()
+    for i, url in enumerate(urls):
+        try:
+            soup = make_soup(url)
+            paragraphs = find_paragraphs(soup)
+            paragraphs_list = [p.text for p in paragraphs]
+            tuples_list = [(url, i, p) for i, p in enumerate(paragraphs_list)]
+            for tup in tuples_list:
+                df = df.append(pd.Series(tup, index=['url', 'paragraph_index', 'paragraph_text']), ignore_index=True)
+
+        except:
+            print('error at index', i, url)
+            pass
+
+    return df
+
 if __name__ == '__main__':
     path_to_policy_urls_csv = os.path.normpath('../Data/policy_urls/april_2018_policies.csv')
-    num_policies_to_extract = 10
+    num_policies_to_extract = 100
     # load the privacy policies URL csv file
     df_policies = pd.read_csv(path_to_policy_urls_csv)
     # print(df_policies.head(5))
@@ -198,5 +218,5 @@ if __name__ == '__main__':
     # Save dataframe as csv file
     #df.to_csv('policy_texts.csv')
 
-    create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
-
+    #create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
+    create_dask_df(urls)
