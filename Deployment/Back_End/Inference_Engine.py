@@ -1,9 +1,12 @@
 import tensorflow as tf
 import os
 import numpy as np
-#from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
+import sys
+sys.path.append(os.path.normpath('../../Demo'))
 
-from HTML_Parser import parse_policy
+from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
+
+import HTML_Parser
 
 class backend_model:
     def __init__(self):
@@ -29,20 +32,22 @@ class backend_model:
     def policy_prediction(self,url):
         final_preds = {name : [] for name in self.models.keys()}
         paragraphs = HTML_Parser.parse_policy(url)
+
         for paragraph in paragraphs:
-            prediction = self.single_prediction(paragraph)
-            for category in prediction:
-                if prediction[category] >= 0.5:
-                    final_preds[category].append(paragraph)
+                prediction = self.single_prediction(paragraph)
+
+                for category in prediction:
+                    if prediction[category] >= 0.5:
+                        final_preds[category].append(paragraph)
 
         return final_preds
 
 
 model = backend_model()
-#third_party_path = os.path.normpath('Demo_Model_Weights/third_party_model/third_party_model')
-#location_path = os.path.normpath('Demo_Model_Weights/location_model/location_model')
-#identifier_path = os.path.normpath('Demo_Model_Weights/identifier_model/Best_Identifier_Model')
+third_party_path = os.path.normpath('../../Demo/Demo_Model_Weights/third_party_model/third_party_model')
+location_path = os.path.normpath('../../Demo/Demo_Model_Weights/location_model/location_model')
+identifier_path = os.path.normpath('../../Demo/Demo_Model_Weights/identifier_model/Best_Identifier_Model')
 
-#model.add_model('IDENTIFIERS', identifier_path)
-#model.add_model('LOCATION', location_path)
-#model.add_model('3RD_PARTY', third_party_path)
+model.add_model('IDENTIFIERS', identifier_path)
+model.add_model('LOCATION', location_path)
+model.add_model('3RD_PARTY', third_party_path)
