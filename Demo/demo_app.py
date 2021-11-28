@@ -60,7 +60,7 @@ async def predict(input_text: str):
     # print(predictions)
     return model.single_prediction(input_text)
 
-@app.post('/parse_url')
+@app.post('/analize_policy')
 async def analyze_policy(url):
     return model.policy_prediction(url)
 
