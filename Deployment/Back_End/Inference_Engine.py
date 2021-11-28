@@ -42,6 +42,19 @@ class backend_model:
 
         return final_preds
 
+def bayes_score(confusion_matrix, n_detected):
+    tn, fp, fn, tp = confusion_matrix([0, 1, 0, 1], [1, 1, 1, 0]).ravel()
+    total = sum([tn,fn,tp,tn])
+
+    pb = (tp+fn) / total
+    pa = (tp + fp) / total
+    pab = tp/(tp+fn)
+
+    pba = (pb * pab)/ pa
+
+    score = 1-(1-pba)**n_detected
+
+    return score
 
 model = backend_model()
 third_party_path = os.path.normpath('../../Demo/Demo_Model_Weights/third_party_model/third_party_model')
