@@ -1,8 +1,4 @@
 rom bs4 import BeautifulSoup
-import pandas as pd
-import os
-import dask
-import dask.dataframe
 
 """
 1. take a url as input and make it into a bs4 soup object
