@@ -2,6 +2,7 @@ import tensorflow as tf
 import os
 import numpy as np
 from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
+import HTML_Parser
 
 
 class backend_model:
@@ -24,6 +25,19 @@ class backend_model:
         prediction = {name:float(self.models[name].predict(text_vector)[0][0]) for name in self.models.keys()}
 
         return prediction
+
+    def policy_prediction(self, url):
+        final_preds = {name: [] for name in self.models.keys()}
+        paragraphs = HTML_Parser.parse_policy(url)
+
+        for paragraph in paragraphs:
+            prediction = self.single_prediction(paragraph)
+
+            for category in prediction:
+                if prediction[category] >= 0.5:
+                    final_preds[category].append(paragraph)
+
+        return final_preds
 
 
 model = backend_model()
