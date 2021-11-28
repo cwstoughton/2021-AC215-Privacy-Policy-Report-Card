@@ -142,6 +142,6 @@ def find_paragraphs(soup):
 def parse_policy(url):
     soup = make_soup(url)
     paragraphs = find_paragraphs(soup)
-    paragraphs_list = [p.text for p in paragraphs]
+    paragraphs_list = [p.text for p in paragraphs if len(p.text.split())>2]
 
     return paragraphs_list
