@@ -2,6 +2,7 @@ import tensorflow as tf
 import os
 import numpy as np
 import sys
+import pandas as pd
 sys.path.append(os.path.normpath('../../Demo'))
 
 from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
@@ -30,10 +31,23 @@ class backend_model:
         return prediction
 
     def policy_prediction(self,url):
-        final_preds = {name : [] for name in self.models.keys()}
         paragraphs = HTML_Parser.parse_policy(url)
+        if len (paragraphs)> 1:
+            df = pd.DataFrame(columns=['Text'])
+            df['Text'] = paragraphs
+            df['Standardized'] = standardize_text(df['Text'])
+            text_vector = text_vectorizer(df['Standardized'])
 
-        for paragraph in paragraphs:
+            for m in self.models.keys():
+                df[m] = self.models[m].predict(text_vector)
+
+            final_preds = {name:
+                               list(df[df[name] > 0.5]['Text']
+                                    ) for name in self.models.keys()}
+
+        else:
+            final_preds = {name: [] for name in self.models.keys()}
+            for paragraph in paragraphs:
                 prediction = self.single_prediction(paragraph)
 
                 for category in prediction:
