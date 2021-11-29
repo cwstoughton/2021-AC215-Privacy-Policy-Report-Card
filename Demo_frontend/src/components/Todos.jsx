@@ -11,8 +11,8 @@ const TodosContext = React.createContext({
 export default function Todos() {
   const [todos, setTodos] = useState([])
 
-  const fetchTodos = async () => {
-    const response = await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent("https://twitter.com/en/privacy")}`)
+  const fetchTodos = async (input) => {
+    const response = await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent(input)}`)
     const todos = await response.json()
     setTodos(todos.data)
   }
