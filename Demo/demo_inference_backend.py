@@ -3,6 +3,7 @@ import os
 import numpy as np
 from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
 import HTML_Parser
+import pandas as pd
 
 
 class backend_model:

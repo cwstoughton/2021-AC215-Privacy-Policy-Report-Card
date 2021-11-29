@@ -60,10 +60,11 @@ async def predict(input_text: str):
     # print(predictions)
     return model.single_prediction(input_text)
 
-@app.get('/analize_policy')
+@app.post('/analize_policy')
 async def analyze_policy(url):
     url = url.replace(r'%2F', r'/')
-    url = url.replace(r'%3A', r'/')
+    url = url.replace(r'%3A', r':')
+
     return model.policy_prediction(url)
 
 @app.get("/todo", tags=["todos"])
