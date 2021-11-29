@@ -9,24 +9,24 @@ const TodosContext = React.createContext({
   todos: [], fetchTodos: () => {}
 })
 export default function Todos() {
-
-  // const [item, setItem] = React.useState("nope")/**/
   const [todos, setTodos] = useState([])
 
   const fetchTodos = async () => {
-    setTodos(todos)
+    const response = await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent("https://twitter.com/en/privacy")}`)
+    const todos = await response.json()
+    setTodos(todos.data)
   }
   useEffect(() => {
     fetchTodos()
   })
-
   return (
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
-        
+
       <Stack spacing={5}>
 
-        {JSON.stringify(todos)}
+
+
       </Stack>
     </TodosContext.Provider>
   )
@@ -42,16 +42,12 @@ function AddTodo() {
     setItem(event.target.value)
   }
 
-  const handleSubmit = (event) => {
-    const atodo = {
-      "item": item
-    }
-    
-    fetch(`http://localhost:9000/analyze`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: {"url": atodo.item}
-    }).then(fetchTodos)
+  const handleSubmit = async (event) => {
+    // const pageElements = {
+    //   "input": item,
+    // }
+
+   await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent(item.toString())}`).then(fetchTodos)
   }
 
   return (
@@ -60,11 +56,10 @@ function AddTodo() {
         <Input
           pr="4.5rem"
           type="text"
-          placeholder="Enter the URL to the privacy policy you'd like to score"
-          aria-label="Enter the URL to the privacy policy you'd like to score"
+          placeholder= "PLACEHOLDER"
+          aria-label="https://twitter.com/en/privacy"
           onChange={handleInput}
         />
       </InputGroup>
     </form>
-  )
-}
+  )}

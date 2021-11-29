@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from demo_inference_backend import model
 from fastapi.middleware.cors import CORSMiddleware
-
+import json
 
 app = FastAPI()
 
@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-
+CATEGORIES = ["IDENTIFIERS", "LOCATION", "3RD_PARTY"]
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -36,6 +36,9 @@ def index():
     <body>
         Welcome to the Privacy Policy Report Card App!
         <br><br>
+        
+        We use cookies!
+        
         <a href="http://localhost:3000">Click here to start</a>
     </body>
 </html>
@@ -48,35 +51,53 @@ def index():
 
 #
 
-@app.get("/predict")
-async def get_predictions():
-    return { "data": predictions }
+# @app.get("/predict")
+# async def get_predictions():
+#     return { "data": predictions }
 
-@app.post("/predict_new")
-async def predict(input_text: str):
-   # print(input_text)
+
+
+
+
+@app.get('/analyze', response_class=JSONResponse)
+async def analyze_policy(input : str):
     result = dict()
-    result["input_text"]=input_text
-    result["predictions"]=model.single_prediction(input_text)
-    # print(predictions)
-    return model.single_prediction(input_text)
+    result["input"] = input
 
-@app.post('/analyze')
-async def analyze_policy(url):
-    print(url)
-    url = url.replace(r'%2F', r'/')
-    url = url.replace(r'%3A', r':')
-    result = dict()
-    result["input_text"] = url
+    if input[:4] == "http":
+        url = str(input)
+        print(url)
 
-    if url == "nope":
-        result["predictions"] = {"IDENTIFIERS": [], "LOCATION": [], "3RD_PARTY": []}
-        print('NOPE')
-        return {"data":result}
+        url = url.replace(r'%2F', r'/')
+        url = url.replace(r'%3A', r':')
 
-    result["predictions"] = model.policy_prediction(url)
-    print(result["predictions"])
-    # predictions = [{'input_text': url, 'predictions': str(}]
-    # prediction =
-    # print(result)
-    return {"data": result}
+        try:
+            preds = model.policy_prediction(url)
+            print(preds)
+            result["predictions"] = preds
+        except:
+            for cat in CATEGORIES:
+                result["predictions"][cat] = []
+            print('No text found')
+
+        return result
+
+    else:
+        result["predictions"] = "ERROR"
+    return json.dumps({"data": result})
+#
+# @app.post("/predict_new")
+# async def predict(input_text: str):
+#     # print(input_text)
+#     result = dict()
+#     result["input_text"] = input_text
+#     result["predictions"] = model.single_prediction(input_text)
+#     # print(predictions)
+#     return model.single_prediction(input_text)
+#     # result["predictions"] = model.policy_prediction(url)
+#     # print(result["predictions"])
+#     # predictions = [{'input_text': url, 'predictions': str(}]
+#     # prediction =
+#     # print(result)
+
+
