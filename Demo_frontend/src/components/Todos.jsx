@@ -60,8 +60,8 @@ function AddTodo() {
         <Input
           pr="4.5rem"
           type="text"
-          placeholder="Enter a sentence or paragraph as input text."
-          aria-label="Enter a sentence or paragraph as input text."
+          placeholder="Enter the URL to the privacy policy you'd like to score"
+          aria-label="Enter the URL to the privacy policy you'd like to score"
           onChange={handleInput}
         />
       </InputGroup>
