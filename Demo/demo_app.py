@@ -46,6 +46,7 @@ def index():
 #     # return model.single_prediction(input_text)
 #     return { "data": predictions }
 
+#
 
 @app.get("/predict")
 async def get_predictions():
@@ -60,13 +61,22 @@ async def predict(input_text: str):
     # print(predictions)
     return model.single_prediction(input_text)
 
-@app.post('/analize_policy')
+@app.post('/analyze')
 async def analyze_policy(url):
+    print(url)
     url = url.replace(r'%2F', r'/')
     url = url.replace(r'%3A', r':')
+    result = dict()
+    result["input_text"] = url
 
-    return model.policy_prediction(url)
+    if url == "nope":
+        result["predictions"] = {"IDENTIFIERS": [], "LOCATION": [], "3RD_PARTY": []}
+        print('NOPE')
+        return {"data":result}
 
-@app.get("/todo", tags=["todos"])
-async def get_todos() -> dict:
-    return { "data": predictions }
+    result["predictions"] = model.policy_prediction(url)
+    print(result["predictions"])
+    # predictions = [{'input_text': url, 'predictions': str(}]
+    # prediction =
+    # print(result)
+    return {"data": result}
