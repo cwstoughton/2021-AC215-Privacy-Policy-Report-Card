@@ -162,6 +162,15 @@ def create_df(urls):
     return df
 
 def create_docs(urls, save_directory):
+    log_file = os.path.join(save_directory, 'log.csv')
+    try:
+        log = pd.read_csv(master_doc)
+    except:
+        log = pd.DataFrame(columns=['Completed'])
+
+    urls = pd.Series(urls)
+    urls = list(urls[~urls.isin(log['Completed'])])
+
     for i, url in enumerate(urls):
         try:
             soup = make_soup(url)
@@ -171,12 +180,15 @@ def create_docs(urls, save_directory):
                 if len(par.split()) > 2:
                     name = 'policy_index_'+str(i) + '_paragraph_' + str(idx) +'.txt'
                     filepath = os.path.join(save_directory, name)
-                    with open (filepath, 'w+') as destination:
-                        destination.write(par)
+                    if not os.path.exists(filepath):
+                        with open (filepath, 'w+') as destination:
+                            destination.write(par)
 
         except:
             print('error at index', i, url)
             pass
+        log.append({'Completed': url}, ignore_index = True)
+        log.to_csv(log_file)
 
 
 def create_dask_df(urls):
@@ -212,11 +224,11 @@ if __name__ == '__main__':
     # print(urls)
     # Create a dataframe with the policy texts
     #df = create_df(urls)
-   # print(df.head())
+    # print(df.head())
     #print(f"DataFrame consists of {df.shape[0]} paragraphs from {num_policies_to_extract} policies.")
 
     # Save dataframe as csv file
     #df.to_csv('policy_texts.csv')
 
-    #create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
-    create_dask_df(urls)
+    create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
+    #create_dask_df(urls)
