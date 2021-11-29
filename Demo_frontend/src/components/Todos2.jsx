@@ -1,66 +1,56 @@
 import React, { useEffect, useState } from "react";
 import {
-    Box,
-    Button,
-    Flex,
     Input,
     InputGroup,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
     Stack,
-    Text,
-    useDisclosure
 } from "@chakra-ui/core";
 
 const TodosContext = React.createContext({
   todos: [], fetchTodos: () => {}
 })
-
 export default function Todos() {
+
+  // const [item, setItem] = React.useState("nope")/**/
   const [todos, setTodos] = useState([])
+
   const fetchTodos = async () => {
-    const response = await fetch("http://localhost:9000/predict")
-    const todos = await response.json()
-    setTodos(todos.data)
+    setTodos(todos)
   }
-  console.log(todos.toString())
   useEffect(() => {
     fetchTodos()
-  }, [])
+  })
+
   return (
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
+
       <Stack spacing={5}>
 
+        {JSON.stringify(todos)}
       </Stack>
     </TodosContext.Provider>
   )
 }
 
+
+
 function AddTodo() {
   const [item, setItem] = React.useState("")
-  const {todos, fetchTodos} = React.useContext(TodosContext)
-  
+  const {fetchTodos} = React.useContext(TodosContext)
+
   const handleInput = event  => {
     setItem(event.target.value)
   }
 
   const handleSubmit = (event) => {
-    const newTodo = {
-      "text": todos.length + 1,
+    const atodo = {
       "item": item
     }
 
-        fetch(`http://localhost:9000/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
+    fetch(`http://localhost:9000/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // body: newTodo.item
-      
+      body: {"url": atodo.item}
     }).then(fetchTodos)
   }
 
