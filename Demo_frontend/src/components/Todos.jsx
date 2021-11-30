@@ -1,51 +1,79 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Input,
     InputGroup,
-    Stack,
+    Stack
 } from "@chakra-ui/core";
 
-const TodosContext = React.createContext({
-  todos: [], fetchTodos: () => {}
+// const IdentifierContext = React.createContext({
+//   identifier_paragraphs : [], fetch_identifier_paragraphs: () => {}
+// })
+//
+// const LocationContext = React.createContext({
+//   location_paragraphs : [], fetch_location_paragraphs: () => {}
+// })
+
+
+
+const APIContext = React.createContext({
+  policy_url : "initiate", fetch_policy_scores: () => {}
+})
+
+const PolicyScoreContext = React.createContext({
+  policy_scores : () => {}, fetch_policy_scores: () => {}
 })
 
 export default function Todos() {
-  const [todos, setTodos] = useState([])
+  // const [identifier_paragraphs, set_identifier_paragraphs] = useState([])
+  // const [location_paragraphs, set_location_paragraphs] = useState([])
+  const [policy_scores, set_policy_scores] = useState([])
+  const {policy_url} = useContext(APIContext)
 
-  const fetchTodos = async (input) => {
-    const response = await fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy`)
-    const todos = await response.json()
-    setTodos(todos.data)
+
+  const fetch_policy_scores = async () => {
+
+      const response = await fetch('http://localhost:9000/analyze?input='+ policy_url.toString())
+      const policy_scores = await response.json()
+      set_policy_scores(policy_scores.data)
   }
   useEffect(() => {
-    fetchTodos()
-  })
+        fetch_policy_scores()
+      })
   return (
-    <TodosContext.Provider value={{todos, fetchTodos}}>
-      <AddTodo />  {/* new */}
+    <PolicyScoreContext.Provider value={{policy_scores, fetch_policy_scores}}>
+      <AnalyzePolicy />  {/* new */}
+        <Stack spacing={5}>
+            {
+                <b>{JSON.stringify(policy_scores)}</b>
+                // <b>{policy_scores.input_text} : {policy_scores.predictions }</b>
 
-      <div>{JSON.stringify(todos)}</div>
+            }
+        </Stack>
 
-    </TodosContext.Provider>
+
+
+
+    </PolicyScoreContext.Provider>
   )
 }
 
+function AnalyzePolicy() {
+  // const [item, setItem] = React.useState("")
+  const [policy_url, set_url] = React.useState("initiate")
+  const {policy_scores, fetch_policy_scores} = React.useContext(PolicyScoreContext)
 
-function AddTodo() {
-  const [item, setItem] = React.useState("")
-  const {fetchTodos} = React.useContext(TodosContext)
 
   const handleInput = event  => {
-    setItem(event.target.value)
+      set_url(event.target.value)
   }
 
-  const handleSubmit = async (event) => {
-    // const pageElements = {
-    //   "input": item,
-    // }
+  const handleSubmit = (event) => {
+      const policy_url_request  = {
+          'input': policy_url
+          }
+     fetch_policy_scores(policy_url)
 
-   await fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy}`).then(fetchTodos)
-  }
+      }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -53,10 +81,11 @@ function AddTodo() {
         <Input
           pr="4.5rem"
           type="text"
-          placeholder= "PLACEHOLDER"
-          aria-label="https://twitter.com/en/privacy"
+          placeholder="Enter a sentence or paragraph as input text."
+          aria-label="Enter a sentence or paragraph as input text."
           onChange={handleInput}
         />
       </InputGroup>
     </form>
-  )}
+  )
+}

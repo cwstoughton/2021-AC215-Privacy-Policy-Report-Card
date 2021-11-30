@@ -5,34 +5,53 @@ import {
     Stack,
 } from "@chakra-ui/core";
 
+const TodosContext = React.createContext({
+  todos: [], fetchTodos: () => {}
+})
+export default function Todos() {
+  const [todos, setTodos] = useState([{'input_text':"", "predictions":""}])
+  // const todos =
+  const fetchTodos = async () => {
+    // const response = await fetch("http://localhost:9000/todo")
+    // const todos = await response.json()
+    setTodos(todos.data)
+  }
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+  return (
+    <TodosContext.Provider value={{todos, fetchTodos}}>
+      <AddTodo />  {/* new */}
+      <Stack spacing={5}>
+        {todos.map((todo) => (
+          <b>{todo.input_text} : {JSON.stringify(todo.predictions)}</b>
+        ))}
+      </Stack>
+    </TodosContext.Provider>
+  )
+}
 
-export function RenderPreds(res){
-    const targets = res.keys
-    const paragraphs = []
-
-    for (const k in targets){
-                paragraphs = paragraphs.concat(
-                'We found {k} tracking in the following paragraphs:')
-                for (const p in targets.k){
-                    paragraphs = paragraphs.concat(p)
-                 }}
-    res = JSON.stringify(res)
-    return(
-        <div>
-          <p>{res}</p>
-        </div>)
-    }
-
-export function GetPreds(){
+function AddTodo() {
   const [item, setItem] = React.useState("")
+  const {fetchTodos} = React.useContext(TodosContext)
 
   const handleInput = event  => {
     setItem(event.target.value)
   }
 
-  const handleSubmit = async (event) => {
-    fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy`, {method : 'GET'}).then(RenderPreds)
+  const handleSubmit = (event) => {
+    const newTodo = {
+      "text": todos.length + 1,
+      "item": item
     }
+
+    const todos = fetch(`http://localhost:9000/analyze_policy?input_text=${encodeURIComponent(newTodo.item)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // body: newTodo.item
+
+    }).then(fetchTodos)
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -40,10 +59,11 @@ export function GetPreds(){
         <Input
           pr="4.5rem"
           type="text"
-          placeholder= "PLACEHOLDER"
-          aria-label="https://twitter.com/en/privacy"
+          placeholder="Enter a sentence or paragraph as input text."
+          aria-label="Enter a sentence or paragraph as input text."
           onChange={handleInput}
         />
       </InputGroup>
     </form>
-  )}
+  )
+}

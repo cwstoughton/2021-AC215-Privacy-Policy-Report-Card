@@ -59,32 +59,35 @@ def index():
 
 
 
-@app.get('/analyze', response_class=JSONResponse)
+@app.get('/analyze')
 async def analyze_policy(input : str):
-    result = dict()
-    result["input"] = input
+    res = dict()
+    res['input_text'] = input
 
-    if input[:4] == "http":
-        url = str(input)
-        print(url)
-
-        url = url.replace(r'%2F', r'/')
-        url = url.replace(r'%3A', r':')
-
-        try:
-            preds = model.policy_prediction(url)
-            print(preds)
-            result["predictions"] = preds
-        except:
-            for cat in CATEGORIES:
-                result["predictions"][cat] = []
-            print('No text found')
-
-        return result
+    if input == "initiate":
+        res['predictions'] = {'IDENTIFIERS': [], "LOCATION":[], "3RD_PARTY":[]}
 
     else:
-        result["predictions"] = "ERROR"
-    return json.dumps({"data": result})
+        res['predictions'] = model.policy_prediction(input)
+    return {"data": res }
+    #
+    # if input[:4] == "http":
+    #     url = str(input)
+    #     print(url)
+    #
+    #     url = url.replace(r'%2F', r'/')
+    #     url = url.replace(r'%3A', r':')
+    #
+    #     try:
+    #         preds = model.policy_prediction(url)
+    #
+    #     except:
+    #         preds = []
+    #         result
+    #         return [{'input_text': input, 'predictions': preds}]
+    #
+    # else:
+    #     return [{'input_text': input, 'predictions': "none"} ]
 #
 # @app.post("/predict_new")
 # async def predict(input_text: str):
