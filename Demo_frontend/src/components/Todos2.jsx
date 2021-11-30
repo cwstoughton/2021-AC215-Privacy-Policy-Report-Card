@@ -6,17 +6,17 @@ import {
 } from "@chakra-ui/core";
 
 
-export function RenderPreds(){
-    const res = fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy`, {method : 'GET', body : JSON.stringify(newTodo})
+export function RenderPreds(res){
     const targets = res.keys
     const paragraphs = []
+
     for (const k in targets){
                 paragraphs = paragraphs.concat(
                 'We found {k} tracking in the following paragraphs:')
                 for (const p in targets.k){
                     paragraphs = paragraphs.concat(p)
                  }}
-
+    res = JSON.stringify(res)
     return(
         <div>
           <p>{res}</p>
