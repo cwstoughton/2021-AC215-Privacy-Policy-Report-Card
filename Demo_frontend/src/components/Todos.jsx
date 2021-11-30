@@ -8,11 +8,12 @@ import {
 const TodosContext = React.createContext({
   todos: [], fetchTodos: () => {}
 })
+
 export default function Todos() {
   const [todos, setTodos] = useState([])
 
   const fetchTodos = async (input) => {
-    const response = await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent(input)}`)
+    const response = await fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy`)
     const todos = await response.json()
     setTodos(todos.data)
   }
@@ -23,15 +24,11 @@ export default function Todos() {
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
 
-      <Stack spacing={5}>
+      <div>{JSON.stringify(todos)}</div>
 
-
-
-      </Stack>
     </TodosContext.Provider>
   )
 }
-
 
 
 function AddTodo() {
@@ -47,7 +44,7 @@ function AddTodo() {
     //   "input": item,
     // }
 
-   await fetch(`http://localhost:9000/analyze?input=${encodeURIComponent(item.toString())}`).then(fetchTodos)
+   await fetch(`http://localhost:9000/analyze?input=https://twitter.com/en/privacy}`).then(fetchTodos)
   }
 
   return (

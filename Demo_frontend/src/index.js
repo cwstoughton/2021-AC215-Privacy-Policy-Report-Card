@@ -3,13 +3,15 @@ import { render } from 'react-dom';
 import { ThemeProvider } from "@chakra-ui/core";
 
 import Header from "./components/Header";
-import Todos from "./components/Todos";  // new
+import { RenderPreds } from "./components/Todos2";
+import { GetPreds } from "./components/Todos2";  // new
 
 function App() {
   return (
     <ThemeProvider>
       <Header />
-      <Todos />  {/* new */}
+      <GetPreds />
+      <RenderPreds />
     </ThemeProvider>
   )
 }
