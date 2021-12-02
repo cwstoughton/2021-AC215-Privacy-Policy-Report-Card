@@ -6,8 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +16,7 @@ app.add_middleware(
 
 
 predictions = [
-    # {"input_text":"We collect cookiesss","predictions":{"IDENTIFIERS":0.04112809896469116,"LOCATION":0.020514369010925293,"3RD_PARTY":0.1350472867488861}}
+    {"input_text":"We collect cookiesss","predictions":{"IDENTIFIERS":0.04112809896469116,"LOCATION":0.020514369010925293,"3RD_PARTY":0.1350472867488861}}
 ]
 
 

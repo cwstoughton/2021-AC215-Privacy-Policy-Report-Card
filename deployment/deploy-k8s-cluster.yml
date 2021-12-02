@@ -150,7 +150,7 @@
                 imagePullPolicy: IfNotPresent
                 name: frontend
                 ports:
-                - containerPort: 80
+                - containerPort: 3000
                   protocol: TCP
     when: cluster_state == "present"
 
@@ -197,7 +197,7 @@
                   - name: GOOGLE_APPLICATION_CREDENTIALS
                     value: /secrets/bucket-reader.json
                   - name: GCP_PROJECT
-                    value: ac215-project
+                    value: calcium-verbena-333800
                   - name: GCP_ZONE
                     value: us-central1-a
     when: cluster_state == "present"
@@ -213,9 +213,9 @@
           namespace: "{{cluster_name}}-namespace"
         spec:
           ports:
-          - port: 80
+          - port: 3000
             protocol: TCP
-            targetPort: 80
+            targetPort: 3000
           selector:
             run: frontend
           type: NodePort

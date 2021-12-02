@@ -25,8 +25,8 @@ docker run --rm --name $IMAGE_NAME -ti \
 --mount type=bind,source="$PERSISTENT_DIR",target=/persistent \
 --mount type=bind,source="$SECRETS_DIR",target=/secrets \
 -p 9000:9000 \
--e DEV=1 \
+-e DEV=0 \
 -e GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS \
 -e GCP_PROJECT=$GCP_PROJECT \
 -e GCP_ZONE=$GCP_ZONE \
---network appnetwork $IMAGE_NAME
+--net=bridge $IMAGE_NAME

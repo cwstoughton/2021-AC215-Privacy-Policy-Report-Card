@@ -23,5 +23,6 @@ docker run --rm --name $IMAGE_NAME -ti \
 --mount type=bind,source=$BASE_DIR/../frontend-react,target=/frontend-react \
 -e GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS \
 -e GCP_PROJECT=$GCP_PROJECT \
--e GCP_ZONE=$GCP_ZONE $IMAGE_NAME
+-e GCP_ZONE=$GCP_ZONE \
+--net=bridge $IMAGE_NAME
 
