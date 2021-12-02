@@ -1,5 +1,5 @@
-SET IMAGE_NAME="mushroom-app-deployment"
-SET GCP_PROJECT="ac215-project"
+SET IMAGE_NAME="privacy-app-deployment"
+SET GCP_PROJECT="calcium-verbena-333800"
 SET GCP_ZONE="us-central1-a"
 SET GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json
 docker build -t %IMAGE_NAME% -f Dockerfile .

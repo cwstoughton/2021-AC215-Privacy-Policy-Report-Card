@@ -44,7 +44,7 @@
     - name: Create frontend container
       docker_container:
         name: "frontend"
-        image: "gcr.io/{{ gcp_project }}/mushroom-app-frontend-react:{{ tag.stdout}}"
+        image: "gcr.io/{{ gcp_project }}/privacy-app-frontend-react:{{ tag.stdout}}"
         state: started
         recreate: yes
         pull: yes
@@ -64,14 +64,14 @@
     - name: Create api-service container
       docker_container:
         name: "api-service"
-        image: "gcr.io/{{ gcp_project }}/mushroom-app-api-service:{{ tag.stdout}}"
+        image: "gcr.io/{{ gcp_project }}/privacy-app-api-service:{{ tag.stdout}}"
         state: started
         recreate: yes
         published_ports:
           - 9000:9000
         env:
           GOOGLE_APPLICATION_CREDENTIALS: "/secrets/bucket-reader.json"
-          GCP_PROJECT: "ac215-project"
+          GCP_PROJECT: "{{ gcp_project }}"
           GCP_ZONE: "us-central1-a"
         networks:
           - name: "{{docker_network_name}}"
