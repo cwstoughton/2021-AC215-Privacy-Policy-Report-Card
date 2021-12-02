@@ -46,7 +46,15 @@ Project Organization and Key Components
                                                                                                    
 - Demo_frontend:Contains files for the prototype and demo react frontend
     - Todos.jsx -> functions for handling API calls                        
-    - App.js -> structure of the app
+    - App.js -> structure of the app  
+  
+- deployment:Contains files for GCP deployment
+- api-service: contains files for the api deployed to GCP
+  - demo_app.py -> API to serve model inferences
+  - demo_model_builder.py -> functions for inference model building                       
+  - demo_inference_backend.py -> builds ensemble model using Demo_Model_Weights    
+- frontend-react: contains files for the frontend deployed to GCP
+  
 
 
       .
