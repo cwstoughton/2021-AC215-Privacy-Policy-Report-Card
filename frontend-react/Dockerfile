@@ -1,6 +1,6 @@
-FROM node:16 as build
+FROM node:16
 
-WORKDIR /app
+WORKDIR app
 
 COPY package*.json ./
 
@@ -11,10 +11,3 @@ COPY . .
 EXPOSE 3000
 
 ENTRYPOINT npm run start
-
-
-## Nginx wrapper to serve static files
-#FROM nginx:stable
-#COPY --from=build /app/build /usr/share/nginx/html
-#EXPOSE 80
-#CMD ["nginx", "-g", "daemon off;"]

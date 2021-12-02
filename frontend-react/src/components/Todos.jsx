@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-    Box,
-    Button,
-    Flex,
     Input,
     InputGroup,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
     Stack,
-    Text,
-    useDisclosure
 } from "@chakra-ui/core";
 
 const TodosContext = React.createContext({
@@ -28,7 +16,7 @@ export default function Todos() {
     const todos = await response.json()
     setTodos(todos.data)
   }
-  console.log(todos.toString())
+  // console.log(todos.toString())
   useEffect(() => {
     fetchTodos()
   }, [])
@@ -36,7 +24,9 @@ export default function Todos() {
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
       <Stack spacing={5}>
-
+           {todos.map((todo) => (
+          <b>{todo.input_text} : {JSON.stringify(todo.predictions)}</b>
+        ))}
       </Stack>
     </TodosContext.Provider>
   )
