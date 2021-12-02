@@ -25,11 +25,6 @@ app.add_middleware(
 )
 
 
-predictions = [
-    # {"input_text":"We collect cookiesss","predictions":{"IDENTIFIERS":0.04112809896469116,"LOCATION":0.020514369010925293,"3RD_PARTY":0.1350472867488861}}
-]
-
-
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -51,6 +46,7 @@ def index():
 #     # return model.single_prediction(input_text)
 #     return { "data": predictions }
 
+#
 
 @app.get("/predict")
 async def get_predictions():
@@ -58,10 +54,29 @@ async def get_predictions():
 
 @app.post("/predict_new")
 async def predict(input_text: str):
-    print(input_text)
+   # print(input_text)
     result = dict()
     result["input_text"]=input_text
     result["predictions"]=model.single_prediction(input_text)
-    predictions.append(result)
     # print(predictions)
     return model.single_prediction(input_text)
+
+@app.post('/analyze')
+async def analyze_policy(url):
+    print(url)
+    url = url.replace(r'%2F', r'/')
+    url = url.replace(r'%3A', r':')
+    result = dict()
+    result["input_text"] = url
+
+    if url == "nope":
+        result["predictions"] = {"IDENTIFIERS": [], "LOCATION": [], "3RD_PARTY": []}
+        print('NOPE')
+        return {"data":result}
+
+    result["predictions"] = model.policy_prediction(url)
+    print(result["predictions"])
+    # predictions = [{'input_text': url, 'predictions': str(}]
+    # prediction =
+    # print(result)
+    return {"data": result}
