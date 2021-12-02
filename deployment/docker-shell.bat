@@ -6,7 +6,6 @@ docker build -t %IMAGE_NAME% -f Dockerfile .
 cd ..
 docker run --rm --name %IMAGE_NAME% -ti ^
            -v /var/run/docker.sock:/var/run/docker.sock ^
-           --mount type=bind,source="%cd%\deployment",target=/app ^
            --mount type=bind,source="%cd%\secrets",target=/secrets ^
            --mount type=bind,source="C:\Users\<UserName>\.ssh",target=/home/app/.ssh ^
            --mount type=bind,source="%cd%\api-service",target=/api-service ^
