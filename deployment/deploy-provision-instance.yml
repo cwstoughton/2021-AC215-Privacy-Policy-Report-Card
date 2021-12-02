@@ -55,6 +55,7 @@
           - python-setuptools
           - python-pip
           - python-docker
+          - python-requests
         force_apt_get: "yes"
         state: present
 

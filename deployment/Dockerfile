@@ -26,7 +26,7 @@ RUN set -ex; \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir --upgrade pip && \
-    pip install openshift ansible docker apache-libcloud && \
+    pip install openshift ansible docker apache-libcloud requests && \
     useradd -ms /bin/bash app -d /home/app -u 1000 -p "$(openssl passwd -1 passw0rd)" && \
     usermod -aG docker app && \
     mkdir -p /app && \
@@ -35,10 +35,10 @@ RUN set -ex; \
 # Switch to the new user (need ot run as root for docker build)
 #USER app
 WORKDIR /app
-appserver
+
 # Add the rest of the source code. This is done last so we don't invalidate all
 # layers when we change a line of code.
-ADD --chown=app:app deployment /app
+ADD --chown=app:app . /app
 
 # Install ansible dependencies
 RUN set -ex; \
