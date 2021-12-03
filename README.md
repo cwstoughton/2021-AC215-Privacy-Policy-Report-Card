@@ -83,8 +83,8 @@ Project Organization and Key Components
       │   ├── milestone1_groupname
       │   ├── milestone2_groupname
       ├── api-service # conains files for the backend prototype and demo to run in GCP GKE
-      │   ├── 
-      ├── Demo_Frontend #conains files for the frontend prototype and demo to run GCP GKE
+      ├── frontend-react #conains files for the frontend prototype and demo to run GCP GKE
+      ├── deployment #conains files for configuring deployment to GCP GKE
       └── test_project.py
       
 
