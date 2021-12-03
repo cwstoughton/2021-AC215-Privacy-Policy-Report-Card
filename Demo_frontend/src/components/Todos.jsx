@@ -28,7 +28,7 @@ export default function Todos() {
     const todos = await response.json()
     setTodos(todos.data)
   }
-  console.log(todos.toString())
+  // console.log(todos.toString())
   useEffect(() => {
     fetchTodos()
   }, [])
@@ -36,7 +36,9 @@ export default function Todos() {
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
       <Stack spacing={5}>
-
+            {todos.map((todo) => (
+          <b>{todo.input_text} : {JSON.stringify(todo.predictions)}</b>
+        ))}
       </Stack>
     </TodosContext.Provider>
   )
