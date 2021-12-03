@@ -3,6 +3,8 @@ AC215-Privacy Policy Report Card
 
 AC215 Fall 2021
 
+
+
 Project Description
 ------------
 
@@ -10,6 +12,10 @@ The goal of this project is to build an application that will allow users to ent
 the URL of a privacy policy, and receive a "report card" explaining which categories
 of user data the application collects and shares.
 
+Project Demo
+------------
+
+This tutorial will allow you to create a Kubernetes cluster on GCP with an API backend and a React frontend. You can see a [demo here](http://34.134.205.218.sslip.io/). 
 
 Design Overview
 ------------
