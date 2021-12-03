@@ -201,7 +201,7 @@ Search for each of these in the GCP search bar and click enable to enable these 
 
 - Check if make sure you are authenticated to GCP
 - Run `gcloud auth list`
-```
+
 
 # Deploy to Kubernetes Cluster
 We will use ansible to create and deploy the Privacy app into a Kubernetes Cluster
@@ -209,6 +209,7 @@ We will use ansible to create and deploy the Privacy app into a Kubernetes Clust
 ### Create a Deployment Yaml file (Ansible Playbook)
 * Add a file called `deploy-k8s-cluster.yml` inside the deployment folder
 * Add the following script:
+
 ```
 ---
 - name: "Create Kubernetes Cluster and deploy multiple containers"
