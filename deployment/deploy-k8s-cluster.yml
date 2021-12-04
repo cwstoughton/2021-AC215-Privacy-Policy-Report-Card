@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    cluster_name: "privacy-app-cluster"
+    cluster_name: "privacy2-app-cluster"
     machine_type: "n1-standard-1"
     machine_disk_size: 30
     initial_node_count: 2
@@ -146,7 +146,7 @@
                 run: frontend
             spec:
               containers:
-              - image: "gcr.io/{{ gcp_project }}/privacy-app-frontend-react:{{ tag.stdout}}"
+              - image: "gcr.io/{{ gcp_project }}/privacy-app-frontend-react2:{{ tag.stdout}}"
                 imagePullPolicy: IfNotPresent
                 name: frontend
                 ports:

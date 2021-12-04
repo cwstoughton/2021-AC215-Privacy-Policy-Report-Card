@@ -12,7 +12,7 @@ const TodosContext = React.createContext({
 export default function Todos() {
   const [todos, setTodos] = useState([])
   const fetchTodos = async () => {
-    const response = await fetch("http://localhost:9000/predict")
+    const response = await fetch("/api/predict")
     const todos = await response.json()
     setTodos(todos.data)
   }
@@ -46,7 +46,7 @@ function AddTodo() {
       "item": item
     }
 
-        fetch(`http://localhost:9000/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
+        fetch(`/api/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // body: newTodo.item
