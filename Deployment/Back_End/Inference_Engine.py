@@ -1,10 +1,13 @@
 import tensorflow as tf
 import os
 import numpy as np
-from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
-import HTML_Parser
+import sys
 import pandas as pd
+sys.path.append(os.path.normpath('../../Demo'))
 
+from demo_model_builder import binary_cnn_with_embeddings, standardize_text, text_vectorizer
+
+import HTML_Parser
 
 class backend_model:
     def __init__(self):
@@ -27,9 +30,9 @@ class backend_model:
 
         return prediction
 
-    def policy_prediction(self, url):
+    def policy_prediction(self,url):
         paragraphs = HTML_Parser.parse_policy(url)
-        if len(paragraphs) > 1:
+        if len (paragraphs)> 1:
             df = pd.DataFrame(columns=['Text'])
             df['Text'] = paragraphs
             df['Standardized'] = standardize_text(df['Text'])
@@ -53,11 +56,24 @@ class backend_model:
 
         return final_preds
 
+def bayes_score(confusion_matrix, n_detected):
+    tn, fp, fn, tp = confusion_matrix.ravel()
+    total = sum([tn,fn,tp,tn])
+
+    pb = (tp+fn) / total
+    pa = (tp + fp) / total
+    pab = tp/(tp+fn)
+
+    pba = (pb * pab)/ pa
+
+    score = 1-(1-pba)**n_detected
+
+    return score
 
 model = backend_model()
-third_party_path = os.path.normpath('Demo_Model_Weights/third_party_model/third_party_model')
-location_path = os.path.normpath('Demo_Model_Weights/location_model/location_model')
-identifier_path = os.path.normpath('Demo_Model_Weights/identifier_model/Best_Identifier_Model')
+third_party_path = os.path.normpath('../../Demo/Demo_Model_Weights/third_party_model/third_party_model')
+location_path = os.path.normpath('../../Demo/Demo_Model_Weights/location_model/location_model')
+identifier_path = os.path.normpath('../../Demo/Demo_Model_Weights/identifier_model/Best_Identifier_Model')
 
 model.add_model('IDENTIFIERS', identifier_path)
 model.add_model('LOCATION', location_path)
