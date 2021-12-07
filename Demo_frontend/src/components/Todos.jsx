@@ -39,7 +39,7 @@ export default function Todos() {
     setTodos(newTodos.data)
   }
   const listItems = todos.map((todo) =>
-                <GaugeChart id={todo["input_text"].toString()} style={{height:250, width:'10%', textColor:"#464A4F"}}  nrOfLevels={20}  percent={todo["predictions"]['IDENTIFIERS']} />
+                todo.input_text
   );
 
   useEffect(() => {
@@ -73,24 +73,52 @@ const Component = (
           </Box>
         </TabPanel>
         <TabPanel>
-            <Box style={{backgroundColor:"#FFFFFF"}}>
-
-              <h2>Identifiers</h2>
-            <GaugeChart id="1" style={{width:"33%"}}  nrOfLevels={20} textColor="#000000" colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />
-          </Box>
+            <Stack direction="row">
+                [
+                <Box style={{backgroundColor:"#FFFFFF"}}>
+                    <h2>Identifiers</h2>
+                    <GaugeChart id="1" style={{width:"100%"}}  nrOfLevels={20} textColor="#000000" colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />
+                </Box>,
+                <Box>
+                    <ul>
+                        {listItems.map(item => <li>{item}</li>)}
+                    </ul>
+                </Box>
+                ]
+            </Stack>
         </TabPanel>
         <TabPanel>
-          <Box>
-              <h2>Location Data</h2>
-            <GaugeChart id={todo["input_text"].toString()+"_LC"} style={{width:"33%"}} textColor="#000000" nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />
-          </Box>
+            <Stack direction="row">
+                [
+                <Box style={{backgroundColor:"#FFFFFF"}}>
+                    <h2>Location Data</h2>
+                    <GaugeChart id={todo["input_text"].toString()+"_LC"} style={{width:"100%"}} textColor="#000000" nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />
+                </Box>,
+                <Box>
+                    <ul>
+                        {listItems.map(item => <li>{item}</li>)}
+                    </ul>
+                </Box>
+                ]
+            </Stack>
         </TabPanel>
         <TabPanel>
-          <Box>
-              <h2>3rd Party Sharing</h2>
-            <GaugeChart id={todo["input_text"].toString()+"_3D"} style={{width:"33%"}} textColor="#000000" nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />
-          </Box>
-        </TabPanel></Tabs>]
+            <Stack direction="row">
+                [
+                <Box style={{backgroundColor:"#FFFFFF"}}>
+                    <h2>3rd Party Sharing</h2>
+                    <GaugeChart id={todo["input_text"].toString()+"_3D"} style={{width:"100%"}} textColor="#000000" nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />
+                </Box>,
+                <Box>
+                    <ul>
+                        {listItems.map(item => <li>{item}</li>)}
+                    </ul>
+                </Box>
+                ]
+            </Stack>
+        </TabPanel>
+      </Tabs>
+          ]
       )}
        </Stack>
 
@@ -102,7 +130,7 @@ const Component = (
     <TodosContext.Provider value={{todos, fetchTodos}}>
 
       <AddTodo />  {/* new */}
-       {Component}
+        {Component}
       {/*<Stack spacing={5} divider={<Divider orientation="vertical" flexItem />}>*/}
       {/*  <div>*/}
       {/*  {todos.map(todo => (*/}
