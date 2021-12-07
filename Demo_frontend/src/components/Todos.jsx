@@ -38,10 +38,15 @@ export default function Todos() {
 
     setTodos(newTodos.data)
   }
-  const listItems = todos.map((todo) =>
-                todo.input_text
-  );
 
+// ********************************************************************************************************************************
+  var newResponse = {trackers: ['we use cookies', "we collect your IP address"], location: ['we track your location', 'we my share your location with advertisers'], sharing: ['we share your data']}
+
+  const locationItems = newResponse.location.map(item => item)
+  const trackerItems = newResponse.trackers.map(item => item)
+  const sharingItems = newResponse.sharing.map(item => item)
+
+// ********************************************************************************************************************************
   useEffect(() => {
     fetchTodos()
   }, [])
@@ -81,7 +86,7 @@ const Component = (
                 </Box>,
                 <Box>
                     <ul>
-                        {listItems.map(item => <li>{item}</li>)}
+                        {trackerItems.map(item => <li>{item}</li>)}
                     </ul>
                 </Box>
                 ]
@@ -96,7 +101,7 @@ const Component = (
                 </Box>,
                 <Box>
                     <ul>
-                        {listItems.map(item => <li>{item}</li>)}
+                        {locationItems.map(item => <li>{item}</li>)}
                     </ul>
                 </Box>
                 ]
@@ -111,7 +116,7 @@ const Component = (
                 </Box>,
                 <Box>
                     <ul>
-                        {listItems.map(item => <li>{item}</li>)}
+                        {sharingItems.map(item => <li>{item}</li>)}
                     </ul>
                 </Box>
                 ]
@@ -131,22 +136,6 @@ const Component = (
 
       <AddTodo />  {/* new */}
         {Component}
-      {/*<Stack spacing={5} divider={<Divider orientation="vertical" flexItem />}>*/}
-      {/*  <div>*/}
-      {/*  {todos.map(todo => (*/}
-      {/*      [*/}
-      {/*          <Text style={{textAlignVertical: "center",textAlign: "center",}}>{todo.input_text}</Text>,*/}
-      {/*          <Stack direction="row">*/}
-      {/*              [*/}
-      {/*              <GaugeChart id={todo["input_text"].toString()+"_ID"} style={{height:"250px", width:"33%", textColor:"#FF0000"}}  nrOfLevels={20}   colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />,*/}
-      {/*              <GaugeChart id={todo["input_text"].toString()+"_LC"} style={{height:"250px", width:"33%", textColor:"#464A4F"}}  nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />,*/}
-      {/*              <GaugeChart id={todo["input_text"].toString()+"_3D"} style={{height:"250px", width:"33%", textColor:"#464A4F"}}  nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />*/}
-      {/*              ]*/}
-      {/*          </Stack>*/}
-      {/*      ]*/}
-      {/*  ))}*/}
-      {/*  </div>*/}
-      {/*</Stack>*/}
     </TodosContext.Provider></div>
   )
 }
