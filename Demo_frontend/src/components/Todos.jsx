@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 import {
     Box,
     Button, Divider,
@@ -43,24 +45,81 @@ export default function Todos() {
   useEffect(() => {
     fetchTodos()
   }, [])
-  return (
+
+const chartStyle = {width:"33%", formatTextValue:(value => (value>0.5)), textColor:{color:"FF00FF"}}
+const Component = (
+
+
+<Stack spacing={50}>
+      {todos.map((todo) =>
+          [<Tabs><TabList>
+      <Tab>Overview</Tab>
+              <Tab>Identifiers</Tab>
+      <Tab>Location Data</Tab>
+      <Tab>3rd Party Sharing</Tab>
+    </TabList>
+              <TabPanel>
+          <Box style={{backgroundColor:"#FFFFFF"}}>
+              <h2 style={{color:"white"}}>Overview</h2>
+              <Text><font color="#00FF00">INPUT TEXT:</font> {todo.input_text}</Text>
+              <Stack direction="row">
+                  [
+                  <Stack>[<Text style={{textAlignVertical: "center",textAlign: "center",}}>IDENTIFIERS</Text>,<GaugeChart id="1" style={{width:"100%"}}  nrOfLevels={20} textColor="#000000" colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />]</Stack>,
+                  <Stack>[<Text style={{textAlignVertical: "center",textAlign: "center",}}>LOCATION</Text>,<GaugeChart id={todo["input_text"].toString()+"_LC"} style={{width:"100%"}} textColor="#000000" nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />]</Stack>,
+                  <Stack>[<Text style={{textAlignVertical: "center",textAlign: "center",}}>3RD PARTY </Text>,<GaugeChart id={todo["input_text"].toString()+"_3D"} style={{width:"100%"}} textColor="#000000" nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />]</Stack>
+               ]
+                  </Stack>
+
+          </Box>
+        </TabPanel>
+        <TabPanel>
+            <Box style={{backgroundColor:"#FFFFFF"}}>
+
+              <h2>Identifiers</h2>
+            <GaugeChart id="1" style={{width:"33%"}}  nrOfLevels={20} textColor="#000000" colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />
+          </Box>
+        </TabPanel>
+        <TabPanel>
+          <Box>
+              <h2>Location Data</h2>
+            <GaugeChart id={todo["input_text"].toString()+"_LC"} style={{width:"33%"}} textColor="#000000" nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />
+          </Box>
+        </TabPanel>
+        <TabPanel>
+          <Box>
+              <h2>3rd Party Sharing</h2>
+            <GaugeChart id={todo["input_text"].toString()+"_3D"} style={{width:"33%"}} textColor="#000000" nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />
+          </Box>
+        </TabPanel></Tabs>]
+      )}
+       </Stack>
+
+);
+
+
+
+  return (<div>
     <TodosContext.Provider value={{todos, fetchTodos}}>
+
       <AddTodo />  {/* new */}
-
-      <Stack spacing={5} divider={<Divider orientation="vertical" flexItem />}>
-
-        {todos.map(todo => (
-            [<b>{todo.input_text}</b>, <br />,
-                <Stack direction="row">
-            [<GaugeChart id={todo["input_text"].toString()} style={{height:250, width:'10%', textColor:"#464A4F"}}  nrOfLevels={20}  percent={todo["predictions"]['IDENTIFIERS']} />,
-            <GaugeChart id={todo["input_text"].toString()} style={{height:250, width:'10%', textColor:"#464A4F"}}  nrOfLevels={20}  percent={todo["predictions"]['LOCATION']} />,
-            <GaugeChart id={todo["input_text"].toString()} style={{height:250, width:'10%', textColor:"#464A4F"}}  nrOfLevels={20}  percent={todo["predictions"]['3RD_PARTY']} />]
-                </Stack>]
-        ))}
-        ))}
-        ))}
-      </Stack>
-    </TodosContext.Provider>
+       {Component}
+      {/*<Stack spacing={5} divider={<Divider orientation="vertical" flexItem />}>*/}
+      {/*  <div>*/}
+      {/*  {todos.map(todo => (*/}
+      {/*      [*/}
+      {/*          <Text style={{textAlignVertical: "center",textAlign: "center",}}>{todo.input_text}</Text>,*/}
+      {/*          <Stack direction="row">*/}
+      {/*              [*/}
+      {/*              <GaugeChart id={todo["input_text"].toString()+"_ID"} style={{height:"250px", width:"33%", textColor:"#FF0000"}}  nrOfLevels={20}   colors={["#FFC371", "#FF5F6D"]}  percent={todo["predictions"]['IDENTIFIERS']} />,*/}
+      {/*              <GaugeChart id={todo["input_text"].toString()+"_LC"} style={{height:"250px", width:"33%", textColor:"#464A4F"}}  nrOfLevels={20}   colors={["#C3FF71", "#5FFF6D"]}  percent={todo["predictions"]['LOCATION']} />,*/}
+      {/*              <GaugeChart id={todo["input_text"].toString()+"_3D"} style={{height:"250px", width:"33%", textColor:"#464A4F"}}  nrOfLevels={20}   colors={["#C371FF", "#5F6DFF"]}  percent={todo["predictions"]['3RD_PARTY']} />*/}
+      {/*              ]*/}
+      {/*          </Stack>*/}
+      {/*      ]*/}
+      {/*  ))}*/}
+      {/*  </div>*/}
+      {/*</Stack>*/}
+    </TodosContext.Provider></div>
   )
 }
 
@@ -101,4 +160,7 @@ function AddTodo() {
   )
 }
 
+// function RenderTabs(){
+//   render(component)
+// }
 
