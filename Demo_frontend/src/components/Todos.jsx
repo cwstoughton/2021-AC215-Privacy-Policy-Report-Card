@@ -154,10 +154,10 @@ function AddTodo() {
       "item": item
     }
 
-        fetch(`http://34.134.205.218.sslip.io/api/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
+        fetch("http://34.134.205.218.sslip.io/api/predict_new", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // body: newTodo.item
+      body: JSON.stringify({input_text: encodeURIComponent(newTodo.item)})
       
     }).then(fetchTodos)
   }
@@ -173,6 +173,7 @@ function AddTodo() {
           onChange={handleInput}
         />
       </InputGroup>
+        <Button onKeyPress={handleSubmit}>Submit</Button>
     </form>
   )
 }
