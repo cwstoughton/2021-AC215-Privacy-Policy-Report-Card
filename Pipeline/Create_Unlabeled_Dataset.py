@@ -14,7 +14,7 @@ from urllib.request import urlopen
 def make_soup(url):
     # print('in make_soup')
 
-    html = urlopen(url, timeout = 4).read()
+    html = urlopen(url, timeout = 2).read()
     # print(html)
     return BeautifulSoup(html, "lxml")
 
@@ -211,7 +211,7 @@ def fetch_policies(url):
     except:
         return 'ERROR'
 
-def create_batched_df(policy_df, save_directory, batch_size = 100, filename = 'Unlabeled_Data', max_batches = float('inf')):
+def create_batched_df(policy_df, save_directory, batch_size = 100, filename = 'Unlabeled_Data', max_batches = float('inf'), filter_errors = True, start_index = 0):
     save_directory = os.path.normpath(save_directory)
     filename = filename + '.csv'
     save_path = os.path.join(save_directory, filename)
@@ -223,7 +223,7 @@ def create_batched_df(policy_df, save_directory, batch_size = 100, filename = 'U
         df = pd.DataFrame(columns = ['URL', 'Policy ID', 'paragraphs'])
         start_index = 0
 
-    num_batches = ceil((len(policy_df) - start_index)/batch_size)
+    num_batches = ceil(max(policy_df['ID'] - start_index)/batch_size)
     if num_batches > max_batches:
         num_batches = max_batches
 
@@ -231,7 +231,10 @@ def create_batched_df(policy_df, save_directory, batch_size = 100, filename = 'U
         end_index = start_index + batch_size
         batch = df_batch(policy_df, (start_index, end_index))
         df = df.append(batch, ignore_index = True)
-        df.to_csv(save_path)
+        if filter_errors == True:
+            df = df[df['paragraphs'].astype(str) != '[]']
+            df = df[df['paragraphs'] != 'ERROR']
+        df.to_csv(save_path, index = False)
         print('Saved Batch', i)
         print(' -- index: ['+str(start_index), ':', str(end_index) + ']')
         start_index = end_index
@@ -272,7 +275,7 @@ def create_docs(urls, save_directory):
 
 
 def create_dask_df(urls):
-    df = dask.dataframe.DataFrame(columns = ['Policy Index', 'URL', ])
+    df = dask.dataframe.DataFrame(columns = ['Policy Index', 'URL'])
 
     return df
 
