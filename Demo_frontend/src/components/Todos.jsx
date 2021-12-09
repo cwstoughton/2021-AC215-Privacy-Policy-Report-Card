@@ -1,91 +1,72 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {
     Input,
     InputGroup,
     Stack
 } from "@chakra-ui/core";
 
-// const IdentifierContext = React.createContext({
-//   identifier_paragraphs : [], fetch_identifier_paragraphs: () => {}
-// })
-//
-// const LocationContext = React.createContext({
-//   location_paragraphs : [], fetch_location_paragraphs: () => {}
-// })
 
 
-
-const APIContext = React.createContext({
-  policy_url : "initiate", fetch_policy_scores: () => {}
-})
-
-const PolicyScoreContext = React.createContext({
-  policy_scores : () => {}, fetch_policy_scores: () => {}
-})
+const APIContext = createContext({
+  data: {}, })
 
 export default function Todos() {
-  // const [identifier_paragraphs, set_identifier_paragraphs] = useState([])
-  // const [location_paragraphs, set_location_paragraphs] = useState([])
-  const [policy_scores, set_policy_scores] = useState([])
-  const {policy_url} = useContext(APIContext)
+    const [data, setData] = useState({input_text: "REACT initialize", predictions: {IDENTIFIERS: [], LOCATION:[], THIRD_PARTY:[]}})
+    const [policy_url, set_url] = React.useState("initiate")
+
+        console.log(policy_url)
 
 
-  const fetch_policy_scores = async () => {
-
-      const response = await fetch('http://localhost:9000/analyze?input='+ policy_url.toString())
-      const policy_scores = await response.json()
-      set_policy_scores(policy_scores.data)
-  }
   useEffect(() => {
-        fetch_policy_scores()
-      })
-  return (
-    <PolicyScoreContext.Provider value={{policy_scores, fetch_policy_scores}}>
-      <AnalyzePolicy />  {/* new */}
-        <Stack spacing={5}>
-            {
-                <b>{JSON.stringify(policy_scores)}</b>
-                // <b>{policy_scores.input_text} : {policy_scores.predictions }</b>
-
-            }
-        </Stack>
-
-
-
-
-    </PolicyScoreContext.Provider>
-  )
-}
-
-function AnalyzePolicy() {
-  // const [item, setItem] = React.useState("")
-  const [policy_url, set_url] = React.useState("initiate")
-  const {policy_scores, fetch_policy_scores} = React.useContext(PolicyScoreContext)
-
-
-  const handleInput = event  => {
-      set_url(event.target.value)
-  }
-
-  const handleSubmit = (event) => {
-      const policy_url_request  = {
-          'input': policy_url
-          }
-     fetch_policy_scores(policy_url)
-
+      const callApi = async () => {
+        const response = await fetch('http://localhost:9000/analyze', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+                mode: 'cors',
+            body: JSON.stringify({input : policy_url})})
+          const result = response.json()
+          return result
       }
+      callApi().then(data => {
+          console.log(data.data)
+          setData(data.data)})}, [policy_url])
+
+    function AnalyzePolicy() {
+
+        var placeholderUrl = ""
+        const handleInput = event  => {
+            placeholderUrl = event.target.value
+        }
+        const handleSubmit = (event) =>  {
+            set_url(placeholderUrl)
+        }
+        return (
+            <form onSubmit={handleSubmit}>
+                <InputGroup size="md">
+                    <Input
+                        pr="4.5rem"
+                        type="text"
+                        placeholder="Enter a sentence or paragraph as input text."
+                        aria-label="Enter a sentence or paragraph as input text."
+                        onChange={handleInput}
+                    />
+                </InputGroup>
+            </form>
+        )
+    }
+
 
   return (
-    <form onSubmit={handleSubmit}>
-      <InputGroup size="md">
-        <Input
-          pr="4.5rem"
-          type="text"
-          placeholder="Enter a sentence or paragraph as input text."
-          aria-label="Enter a sentence or paragraph as input text."
-          onChange={handleInput}
-        />
-      </InputGroup>
-    </form>
+      <div>
+          <APIContext.Provider value={{data}}>
+              <AnalyzePolicy />
+              <Stack spacing={1}>
+                  [<b>{data.input_text}</b>]+{data.predictions.IDENTIFIERS.map(item => (<b>{item}</b>))}
+              </Stack>
+          </APIContext.Provider>
+      </div>
   )
 }
