@@ -233,7 +233,7 @@ def create_batched_df(policy_df, save_directory, batch_size = 100, filename = 'U
         df = df.append(batch, ignore_index = True)
         if filter_errors == True:
             df = df[df['paragraphs'].astype(str) != '[]']
-            df = df[df['paragraphs'] != 'ERROR']
+            df = df[df['paragraphs'] != 'ERR0OR']
         df.to_csv(save_path, index = False)
         print('Saved Batch', i)
         print(' -- index: ['+str(start_index), ':', str(end_index) + ']')

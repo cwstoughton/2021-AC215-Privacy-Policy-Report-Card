@@ -23,6 +23,7 @@ tensorflow = "*"
 fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 sklearn = "*"
+datasets = "*"
 
 [dev-packages]
 
