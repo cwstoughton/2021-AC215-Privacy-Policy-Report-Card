@@ -20,9 +20,6 @@ export default function Todos() {
         third_party_score: 0.8,
         third_party_sentences: []
     })
-    const [locationItems, setLocation] = useState()
-    const [trackerItems, setIdentifiers] = useState()
-    const [sharingItems, setThirdParty] = useState()
 
 
     const [policy_url, set_url] = React.useState("")
@@ -74,19 +71,21 @@ export default function Todos() {
     }
 
 
-    const chartStyle = {width: "33%", formatTextValue: (value => (value > 0.5)), textColor: {color: "FF00FF"}}
+    const chartStyle = {width: "33%", formatTextValue: value => (value > 0.5), textColor: {color: "FF00FF"}}
     const Component = (
 
 
         <Stack spacing={50}>
 
             [
-            <Tabs><TabList>
-                <Tab>Overview</Tab>
-                <Tab>Identifiers</Tab>
-                <Tab>Location Data</Tab>
-                <Tab>3rd Party Sharing</Tab>
-            </TabList>
+            <Tabs>
+                <TabList>
+                    <Tab>Overview</Tab>
+                    <Tab>Identifiers</Tab>
+                    <Tab>Location Data</Tab>
+                    <Tab>3rd Party Sharing</Tab>
+
+                </TabList>
                 {/*pass data.identifier_score and data.identifier_sentences to TabPanelMaker*/}
 
                 <TabPanel>
@@ -94,25 +93,41 @@ export default function Todos() {
                         <h2 style={{color: "white"}}>Overview</h2>
                         <Text><font color="#00FF00">INPUT TEXT:</font> {data.input_text}</Text>
                         <Stack direction="row">
+
                             [
-                            <Stack>[<Text
-                                style={{
-                                    textAlignVertical: "center",
-                                    textAlign: "center",
-                                }}>IDENTIFIERS</Text>,<GaugeChart
-                                id={data.input_text.toString() + "_ID"} style={{width: "100%"}} nrOfLevels={20}
-                                textColor="#000000" colors={["#FFC371", "#FF5F6D"]}
-                                percent={data.identifier_score}/>]</Stack>,
-                            <Stack>[<Text
-                                style={{textAlignVertical: "center", textAlign: "center",}}>LOCATION</Text>,<GaugeChart
-                                id={data.input_text.toString() + "_LC"} style={{width: "100%"}} textColor="#000000"
-                                nrOfLevels={20} colors={["#C3FF71", "#5FFF6D"]} percent={data.location_score}/>]</Stack>,
-                            <Stack>[<Text style={{textAlignVertical: "center", textAlign: "center",}}>3RD
-                                PARTY </Text>,<GaugeChart id={data.input_text.toString() + "_3D"}
-                                                          style={{width: "100%"}}
-                                                          textColor="#000000" nrOfLevels={20}
-                                                          colors={["#C371FF", "#5F6DFF"]}
-                                                          percent={data.third_party_score}/>]</Stack>
+                            <Stack>[
+                                <Text
+                                    style={{
+                                        textAlignVertical: "center",
+                                        textAlign: "center",
+                                    }}>IDENTIFIERS</Text>,<GaugeChart
+                                    id={data.input_text.toString() + "_ID"} style={{width: "100%"}} nrOfLevels={20}
+                                    textColor="#000000" colors={["#FFC371", "#FF5F6D"]}
+                                    percent={data.identifier_score}/>]</Stack>,
+
+                            <Stack>[
+                                <Text
+                                    style={{
+                                        textAlignVertical: "center",
+                                        textAlign: "center",
+                                    }}>LOCATION
+                                </Text>,
+
+                                <GaugeChart
+                                    id={data.input_text.toString() + "_LC"} style={{width: "100%"}} textColor="#000000"
+                                    nrOfLevels={20} colors={["#C3FF71", "#5FFF6D"]}
+                                    percent={data.location_score}
+                                />
+                                ]
+                            </Stack>,
+
+                            <Stack>[
+                                <Text style={{textAlignVertical: "center", textAlign: "center",}}>3RD
+                                    PARTY </Text>,<GaugeChart id={data.input_text.toString() + "_3D"}
+                                                              style={{width: "100%"}}
+                                                              textColor="#000000" nrOfLevels={20}
+                                                              colors={["#C371FF", "#5F6DFF"]}
+                                                              percent={data.third_party_score}/>]</Stack>
                             ]
                         </Stack>
 
@@ -136,6 +151,7 @@ export default function Todos() {
                         ]
                     </Stack>
                 </TabPanel>
+
                 <TabPanel>
                     <Stack direction="row">
                         [

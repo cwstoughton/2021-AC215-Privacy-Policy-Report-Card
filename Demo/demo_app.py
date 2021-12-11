@@ -2,29 +2,19 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 from demo_inference_backend import model
 from fastapi.middleware.cors import CORSMiddleware
-import json
+import pandas as pd
+from pydantic import BaseModel
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-    "localhost:3000",
-    "172.17.0.3",
-    "172.17.0.2",
-    "172.17.0.2:3000",
-    "172.17.0.3:3000"
-]
-
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
-CATEGORIES = ["IDENTIFIERS", "LOCATION", "3RD_PARTY"]
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -43,64 +33,53 @@ def index():
     </body>
 </html>
 """
-#
-# @app.get("/predict")
-# async def predict(input_text: str):
-#     # return model.single_prediction(input_text)
-#     return { "data": predictions }
-
-#
-
-# @app.get("/predict")
-# async def get_predictions():
-#     return { "data": predictions }
 
 
+class InputData(BaseModel):
+    input: str
 
 
+def convert_prediction(sentences):
+    result = {"input_text": "asdfasdf", "identifier_score": 0.3, "identifier_sentences": sentences['IDENTIFIERS'],
+              "location_score": 0.5, "location_sentences": sentences['LOCATION'], "third_party_score": 0.8,
+              "third_party_sentences": sentences['3RD_PARTY']}
+    return result
 
-@app.get('/analyze')
-async def analyze_policy(input : str):
-    res = dict()
-    res['input_text'] = input
 
-    if input == "initiate":
-        res['predictions'] = {'IDENTIFIERS': [], "LOCATION":[], "3RD_PARTY":[]}
+@app.get("/predict")
+async def get_predictions():
+    # print(predictions)
+    data = df.to_json()
+    return data
+
+
+@app.post('/analyze')
+async def analyze_policy(input: InputData):
+    # print(predictions["input_text"])
+    result = dict()
+
+    if input.input == "":
+        result={
+            "input_text": "No URL provided",
+            "identifier_score": 0.0,
+            "identifier_sentences": [],
+            "location_score": 0.0,
+            "location_sentences": [],
+            "third_party_score": 0.0,
+            "third_party_sentences": [],
+        }
 
     else:
-        res['predictions'] = model.policy_prediction(input)
-    return {"data": res }
-    #
-    # if input[:4] == "http":
-    #     url = str(input)
-    #     print(url)
-    #
-    #     url = url.replace(r'%2F', r'/')
-    #     url = url.replace(r'%3A', r':')
-    #
-    #     try:
-    #         preds = model.policy_prediction(url)
-    #
-    #     except:
-    #         preds = []
-    #         result
-    #         return [{'input_text': input, 'predictions': preds}]
-    #
-    # else:
-    #     return [{'input_text': input, 'predictions': "none"} ]
-#
-# @app.post("/predict_new")
-# async def predict(input_text: str):
-#     # print(input_text)
-#     result = dict()
-#     result["input_text"] = input_text
-#     result["predictions"] = model.single_prediction(input_text)
-#     # print(predictions)
-#     return model.single_prediction(input_text)
-#     # result["predictions"] = model.policy_prediction(url)
-#     # print(result["predictions"])
-#     # predictions = [{'input_text': url, 'predictions': str(}]
-#     # prediction =
-#     # print(result)
+        result = convert_prediction(model.policy_prediction(input.input))
+        result['input_text'] = str(input.input)
 
 
+    return {"data": result}
+
+
+@app.post("/predict_new")
+async def predict(input_text: str):
+    result = dict()
+    result["input_text"] = input_text
+    result["predictions"] = model.single_prediction(input_text)
+    return model.single_prediction(input_text)
