@@ -50,7 +50,7 @@ text_vectorizer.adapt(text_data.batch(64))
 
 
 
-class backend_model:
+class backend_model_fast:
     def __init__(self):
         self.models = {}
 
@@ -108,7 +108,7 @@ class backend_model:
         return final_preds
 
 
-model = backend_model()
+model = backend_model_fast()
 third_party_path = os.path.normpath('fast_models/third_party_model/third_party_model')
 location_path = os.path.normpath('fast_models/location_model/location_model')
 identifier_path = os.path.normpath('fast_models/identifier_model/Best_Identifier_Model')
