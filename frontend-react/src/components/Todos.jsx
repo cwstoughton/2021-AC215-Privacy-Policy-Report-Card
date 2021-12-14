@@ -53,9 +53,9 @@ export default function Todos() {
         const callApi = async () => {
             const response = await fetch(
                 // for local hosting
-                'http://localhost:9000/analyze',
+                // 'http://localhost:9000/analyze',
                 // for GKE deployment:
-                // "/api/analyze",
+                "/api/analyze",
                 {
                 method: "POST",
                 headers: {

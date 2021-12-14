@@ -4,9 +4,9 @@
 set -e
 
 # Define some environment variables
-export IMAGE_NAME="privacy-app-deployment"
+export IMAGE_NAME="privacy-app-deployment-2"
 export BASE_DIR=$(pwd)
-export GCP_PROJECT="calcium-verbena-333800" # Change to your GCP Project
+export GCP_PROJECT="privacy-analysis-app" # Change to your GCP Project
 export GCP_ZONE="us-central1-a"
 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json
 

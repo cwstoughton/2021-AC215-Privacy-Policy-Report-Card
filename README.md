@@ -15,7 +15,7 @@ of user data the application collects and shares.
 Project Demo
 ------------
 
-This tutorial will allow you to create a Kubernetes cluster on GCP with an API backend and a React frontend. You can see a [demo here](http://34.134.205.218.sslip.io/). 
+This tutorial will allow you to create a Kubernetes cluster on GCP with an API backend and a React frontend. You can see a [demo here](http://34.136.31.21.sslip.io/). 
 
 Design Overview
 ------------
@@ -47,7 +47,7 @@ Project Organization and Key Components
 
 - api-service: Contains files for serving the model as an API                                             
     - demo_app.py -> FastAPI module for serving model inferences                                               
-    - inference_backend.py -> builds ensemble model using Demo_Model_Weights           
+    - `api-service/Back_End/Inference_Engine.py` -> builds ensemble model using Demo_Model_Weights           
                                                                                                    
 - Demo_frontend: Contains files for the frontend as a web app
     - Todos.jsx -> React Component that calls the API using a URL as input and displays the response with visualizations                          
@@ -120,7 +120,7 @@ cd frontend-react
 sh docker-shell.sh
 ```
 This will host the React frontend on your local machine via port 3000. At `localhost:3000`, you should see the following screen.
-![img.png](img.png)
+![img.png](readme-images/img.png)
 
 Now, your app is hosted locally and ready to start analyzing privacy policies!
 
@@ -128,8 +128,7 @@ Now, your app is hosted locally and ready to start analyzing privacy policies!
 
 # Privacy App - Deployment to GCP
 This section describes how to deploy the containers to Google Container Registry. After the following steps, your containers will be pushed to Google Container Registry and ready to be served.
-![img_1.png](img_1.png)
-
+![img_1.png](readme-images/img_1.png)
 
 ## Getting Started 
 ### Make sure the frontend is pointing to the correct URL
@@ -247,7 +246,7 @@ ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_st
 ```
 
 This takes several minutes. Be patient. Once it is deployed successfully you will see the following output. 
-![img_4.png](img_4.png)
+![img_4.png](readme-images/img_4.png)
 
 ### If you want to shell into a container in a Pod
 Use the following commands to access individual containers in the cluster:
@@ -260,14 +259,14 @@ kubectl exec --stdin --tty api-5d4878c545-47754 --namespace=privacy-app-cluster-
 ### View the App
 You can access the hosted app by following the steps below
 * Copy the `nginx_ingress_ip` from the terminal from the create cluster command
-![img_3.png](img_3.png)
+![img_3.png](readme-images/img_3.png)
 * Go to `http://<YOUR INGRESS IP>.sslip.io`
 
 Note that after deploying the cluster successfully, it may still be a few minutes before your containers are up and running. If the Privacy App isn't working immediately after deployment, be patient. It should be working within ten minutes. 
 
 ### Check GCP for Deployment Status
 If you want to see the status of your deployment, click on the Navigation Menu on the upper left corner in your GCP Dashboard. Go to "Kubernetes Engine > Services & Ingress". 
-![img_6.png](img_6.png)
+![img_6.png](readme-images/img_6.png)
 
 Here you can see the status of your cluster and its containers.
-![img_5.png](img_5.png)
+![img_5.png](readme-images/img_5.png)

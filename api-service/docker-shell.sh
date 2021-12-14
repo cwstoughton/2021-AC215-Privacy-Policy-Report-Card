@@ -10,9 +10,9 @@ export IMAGE_NAME="privacy-api-service"
 export BASE_DIR=$(pwd)
 export PERSISTENT_DIR=$(pwd)/../persistent-folder/
 export SECRETS_DIR=$(pwd)/../secrets/
-export GCP_PROJECT="calcium-verbena-333800"
+export GCP_PROJECT="privacy-analysis-app"
 export GCP_ZONE="us-central1-a"
-export GOOGLE_APPLICATION_CREDENTIALS=/secrets/bucket-reader.json
+export GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service.json
 
 # Build the image based on the Dockerfile
 docker build -t $IMAGE_NAME -f Dockerfile .
