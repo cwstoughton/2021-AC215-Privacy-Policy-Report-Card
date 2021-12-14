@@ -56,7 +56,7 @@ def build_component_model(transformer, max_length=512, name = 'component_model')
 #####
 
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
-base_model = TFDistilBertModel.from_pretrained("BERT_BASE")
+
 
 config = DistilBertConfig(dropout=.2,
                           attention_dropout=.2,
@@ -87,10 +87,39 @@ class backend_model:
 
     def single_prediction(self, input_text):
         text = standardize_text(input_text)
-        tokens = tokenizer.encode(truncation=True, padding = True, max_length=max_len)
+        tokens = tokenizer.encode(text, truncation=True, padding = True, max_length=max_len)
+        tokens = pad(tokens, max_len)
+        tokens = np.array(tokens)
+        tokens = tokens.reshape(1,512)
+
         prediction = {name:float(self.models[name].predict(tokens)) for name in self.models.keys()}
 
         return prediction
+
+    def cpu_prediction(self, url):
+        paragraphs = HTML_Parser.parse_policy(url)
+        sentences = {key:[] for key in self.models.keys()}
+        print('number of preds:', len(paragraphs))
+
+        for para in paragraphs:
+            print('making inference on paragraph', paragraphs.index(para))
+            prediction = self.single_prediction(para)
+            for key in prediction.keys():
+                if prediction[key] > 0.5:
+                    sentences[key].append(para)
+
+        preds = [
+            {
+                'category': name,
+                'sentences': sentences[name],
+                'score': 1 - ((1 - (self.model_scores[name]))**len(sentences[name]))
+            }
+
+            for name in self.models.keys()
+        ]
+
+        final_preds = {'data': preds}
+        return final_preds
 
     def policy_prediction(self,url):
         paragraphs = HTML_Parser.parse_policy(url)
