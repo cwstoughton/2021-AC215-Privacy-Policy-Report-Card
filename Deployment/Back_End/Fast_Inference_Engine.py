@@ -85,6 +85,16 @@ class backend_model:
             final_preds = {name:
                                list(df[df[name] > 0.5]['Text']
                                     ) for name in self.models.keys()}
+            preds = [
+                {
+                    'category': name,
+                    'sentences': list(df[df[name] > 0.5]['Text']),
+                    'score': max(df[name])
+                }
+
+                for name in self.models.keys()
+            ]
+            final_preds = {'data': preds}
 
         else:
             final_preds = {name: [] for name in self.models.keys()}
@@ -104,6 +114,7 @@ location_path = os.path.normpath('fast_models/location_model/location_model')
 identifier_path = os.path.normpath('fast_models/identifier_model/Best_Identifier_Model')
 contacts_path = os.path.normpath('fast_models/contact_model/CONTACT')
 
-model.add_model('IDENTIFIERS', identifier_path)
-model.add_model('LOCATION', location_path)
-model.add_model('3RD_PARTY', third_party_path)
+model.add_model('identifiers', identifier_path)
+model.add_model('location', location_path)
+model.add_model('third_party_sharing', third_party_path)
+model.add_model('contacts', third_party_path)
