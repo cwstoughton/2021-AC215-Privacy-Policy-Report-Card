@@ -12,7 +12,7 @@ const Header = () => {
       bg="gray.400"
     >
       <Flex align="center" mr={5}>
-        <Heading as="h1" size="sm">PREDICTIONS</Heading>
+        <Heading as="h1" size="sm">Privacy Policy Analysis</Heading>
         <Divider />
       </Flex>
     </Flex>

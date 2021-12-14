@@ -11,7 +11,7 @@ class backend_model:
         self.models = {}
         self.model_scores = {}
 
-    def add_model(self, model_name, path_to_weights):
+    def add_model(self, model_name, path_to_weights, model_score = None,):
         model = binary_cnn_with_embeddings(1500,25000, 100, model_name = model_name)
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=.01),
                       loss=tf.keras.losses.BinaryCrossentropy(),

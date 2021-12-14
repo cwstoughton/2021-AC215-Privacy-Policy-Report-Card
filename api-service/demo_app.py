@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
-from inference_backend import model
-# from demo_inference_backend import base_model
+# from inference_backend import model
+from Back_End.Fast_Inference_Engine import model
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pydantic import BaseModel
