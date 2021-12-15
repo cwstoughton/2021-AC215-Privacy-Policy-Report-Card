@@ -8,31 +8,35 @@ import {
 const TodosContext = React.createContext({
   todos: [], fetchTodos: () => {}
 })
+
 export default function Todos() {
-
-  // const [item, setItem] = React.useState("nope")/**/
-  const [todos, setTodos] = useState([])
-
+  const [todos, setTodos] = useState([{'input_text':"", "predictions":""}])
+  // const todos =
   const fetchTodos = async () => {
-    setTodos(todos)
+<<<<<<<< HEAD:frontend-react/src/components/Todos2.jsx
+    // const response = await fetch("http://localhost:9000/todo")
+    // const todos = await response.json()
+========
+    const response = await fetch("http://localhost:9000/predict")
+    const todos = await response.json()
+>>>>>>>> final:Demo_frontend/src/components/Todos.jsx
+    setTodos(todos.data)
   }
+  // console.log(todos.toString())
   useEffect(() => {
     fetchTodos()
-  })
-
+  }, [])
   return (
     <TodosContext.Provider value={{todos, fetchTodos}}>
       <AddTodo />  {/* new */}
-
       <Stack spacing={5}>
-
-        {JSON.stringify(todos)}
+            {todos.map((todo) => (
+          <b>{todo.input_text} : {JSON.stringify(todo.predictions)}</b>
+        ))}
       </Stack>
     </TodosContext.Provider>
   )
 }
-
-
 
 function AddTodo() {
   const [item, setItem] = React.useState("")
@@ -43,14 +47,20 @@ function AddTodo() {
   }
 
   const handleSubmit = (event) => {
-    const atodo = {
+    const newTodo = {
+      "text": todos.length + 1,
       "item": item
     }
 
-    fetch(`http://localhost:9000/analyze`, {
+<<<<<<<< HEAD:frontend-react/src/components/Todos2.jsx
+    const todos = fetch(`http://localhost:9000/analyze_policy?input_text=${encodeURIComponent(newTodo.item)}`, {
+========
+        fetch(`http://localhost:9000/predict_new?input_text=${encodeURIComponent(newTodo.item)}`, {
+>>>>>>>> final:Demo_frontend/src/components/Todos.jsx
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: {"url": atodo.item}
+      // body: newTodo.item
+
     }).then(fetchTodos)
   }
 

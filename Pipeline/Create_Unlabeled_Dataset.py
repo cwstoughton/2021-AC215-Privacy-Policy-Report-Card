@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import pandas as pd
-
+import os
+import dask
+import dask.dataframe
 
 """
 1. take a url as input and make it into a bs4 soup object
@@ -159,9 +161,55 @@ def create_df(urls):
 
     return df
 
+def create_docs(urls, save_directory):
+    log_file = os.path.join(save_directory, 'log.csv')
+    try:
+        log = pd.read_csv(master_doc)
+    except:
+        log = pd.DataFrame(columns=['Completed'])
+
+    urls = pd.Series(urls)
+    urls = list(urls[~urls.isin(log['Completed'])])
+
+    for i, url in enumerate(urls):
+        try:
+            soup = make_soup(url)
+            paragraphs = find_paragraphs(soup)
+            paragraphs_list = [p.text for p in paragraphs]
+            for idx, par in enumerate(paragraphs_list):
+                if len(par.split()) > 2:
+                    name = 'policy_index_'+str(i) + '_paragraph_' + str(idx) +'.txt'
+                    filepath = os.path.join(save_directory, name)
+                    if not os.path.exists(filepath):
+                        with open (filepath, 'w+') as destination:
+                            destination.write(par)
+
+        except:
+            print('error at index', i, url)
+            pass
+        log.append({'Completed': url}, ignore_index = True)
+        log.to_csv(log_file)
+
+
+def create_dask_df(urls):
+    df = dask.dataframe.DataFrame()
+    for i, url in enumerate(urls):
+        try:
+            soup = make_soup(url)
+            paragraphs = find_paragraphs(soup)
+            paragraphs_list = [p.text for p in paragraphs]
+            tuples_list = [(url, i, p) for i, p in enumerate(paragraphs_list)]
+            for tup in tuples_list:
+                df = df.append(pd.Series(tup, index=['url', 'paragraph_index', 'paragraph_text']), ignore_index=True)
+
+        except:
+            print('error at index', i, url)
+            pass
+
+    return df
 
 if __name__ == '__main__':
-    path_to_policy_urls_csv = './Data/policy_urls/april_2018_policies.csv'
+    path_to_policy_urls_csv = os.path.normpath('../Data/policy_urls/april_2018_policies.csv')
     num_policies_to_extract = 100
     # load the privacy policies URL csv file
     df_policies = pd.read_csv(path_to_policy_urls_csv)
@@ -175,10 +223,12 @@ if __name__ == '__main__':
     urls = [item.split("'Final URL': '")[1].split("'}")[0] for item in df_policies['Policy Sources']]
     # print(urls)
     # Create a dataframe with the policy texts
-    df = create_df(urls)
-    print(df.head())
-    print(f"DataFrame consists of {df.shape[0]} paragraphs from {num_policies_to_extract} policies.")
+    #df = create_df(urls)
+    # print(df.head())
+    #print(f"DataFrame consists of {df.shape[0]} paragraphs from {num_policies_to_extract} policies.")
 
     # Save dataframe as csv file
-    df.to_csv('policy_texts.csv')
+    #df.to_csv('policy_texts.csv')
 
+    create_docs(urls, os.path.normpath('../Data/Unlabeled_Data'))
+    #create_dask_df(urls)

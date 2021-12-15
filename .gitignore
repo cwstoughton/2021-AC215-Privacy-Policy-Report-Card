@@ -131,6 +131,5 @@ dmypy.json
 
 # Data Folders
 /Data
-
+/api-service/component_models
 .idea/
-/secrets
