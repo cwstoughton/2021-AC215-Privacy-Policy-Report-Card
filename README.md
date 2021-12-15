@@ -15,7 +15,7 @@ of user data the application collects and shares.
 Project Demo
 ------------
 
-This tutorial will allow you to create a Kubernetes cluster on GCP with an API backend and a React frontend. You can see a [demo here](http://34.134.205.218.sslip.io/). 
+This tutorial will allow you to create a Kubernetes cluster on GCP with an API backend and a React frontend. You can see a [demo here](http://34.136.31.21.sslip.io/). 
 
 Design Overview
 ------------
@@ -45,14 +45,13 @@ Project Organization and Key Components
     - Training_Data_Pipeline.py -> encodes text data for training                        
 - models: contains files for training and generating models  
 
-- Demo: Contains files for the prototype and demo backend                                            
-    - demo_app.py -> API to serve model inferences                                          
-    - demo_model_builder.py -> functions for inference model building                       
-    - demo_inference_backend.py -> builds ensemble model using Demo_Model_Weights           
+- api-service: Contains files for serving the model as an API                                             
+    - demo_app.py -> FastAPI module for serving model inferences                                               
+    - `api-service/Back_End/Inference_Engine.py` -> builds ensemble model using Demo_Model_Weights           
                                                                                                    
-- Demo_frontend:Contains files for the prototype and demo react frontend
-    - Todos.jsx -> functions for handling API calls                        
-    - App.js -> structure of the app
+- Demo_frontend: Contains files for the frontend as a web app
+    - Todos.jsx -> React Component that calls the API using a URL as input and displays the response with visualizations                          
+    - TabPanelMaker.jsx -> Creates a tab per category of analysis (IDENTIFIERS, LOCATION, 3RD_PARTY, CONTACTS, etc.)
       
 --------
 
@@ -86,19 +85,63 @@ Project Organization and Key Components
       ├── frontend-react #conains files for the frontend prototype and demo to run GCP GKE
       ├── deployment #conains files for configuring deployment to GCP GKE
       └── test_project.py
-      
+
+# Privacy App - Hosting Locally
+This section describes how to run the Privacy App on your local machine using Docker containers. After these steps, you will have the Privacy App running locally via two Docker containers: the API service backend and the React frontend. Make sure you have Docker installed on your machine before you begin. 
+
+## Getting started
+First, clone this repository. Once that is done, there are two parts to running this app locally.
+- Start the API service backend
+- Start the React frontend
+
+## Start the API service backend
+The API service backend files are contained in the `/api-service` directory. Follow these steps to start the backend:
+- Change directory to `/api-service`
+```
+cd api-service
+```
+- Run `sh docker-shell.sh` or `docker-shell.bat` for Windows
+```
+sh docker-shell.sh
+```
+This will host the API service on your local machine via port 9000. Go to "http://localhost:9000" to see the API service is running. 
+Note that because we are using FastAPI, you can see the swagger documentation at "http://localhost:9000/docs" as well as the ReDoc version at "http://localhost:9000/redoc". 
+
+## Start the React frontend
+The React frontend files are contained in the `/frontend-react` directory. Follow these steps to start the frontend:
+- Open the file `/frontend-react/scr/components/Todos.jsx`. Uncomment line 56 which says `"http://localhost:9000/analyze",`. This enables the frontend to speak to the locally hosted API service backend. Additionally, comment out line 58 which says `"/api/analyze",`. This line is used for allowing the frontend to call the API service in a GKE cluster.
+![img_2.png](img_2.png)
+- Change directory to `/frontend-react`
+```
+cd frontend-react
+```
+- Run `sh docker-shell.sh` or `docker-shell.bat` for Windows
+```
+sh docker-shell.sh
+```
+This will host the React frontend on your local machine via port 3000. At `localhost:3000`, you should see the following screen.
+![img.png](readme-images/img.png)
+
+Now, your app is hosted locally and ready to start analyzing privacy policies!
+
+---
 
 # Privacy App - Deployment to GCP
+This section describes how to deploy the containers to Google Container Registry. After the following steps, your containers will be pushed to Google Container Registry and ready to be served.
+![img_1.png](readme-images/img_1.png)
 
-## API's to enable in GCP before you begin
-Search for each of these in the GCP search bar and click enable to enable these API's
+## Getting Started 
+### Make sure the frontend is pointing to the correct URL
+Before deploying to GCP, open `/frontend-react/src/components/Todos.jsx` and make sure line 56 is commented out and line 58 is uncommented. Line 56, which says `"http://localhost:9000/analyze",` is used for calling the API service when it is being served locally. We don't want to do this for GCP deployment. Line 58 which says `"/api/analyze",` is the correct URL for calling the API service in a GKE cluster, so make sure it is active before deploying. 
+
+### Enable GCP APIs
+To deploy to GCP, we need to enable access several APIs. Search for each of these in the GCP search bar and click enable to enable these APIs:
 * Compute Engine API
 * Service Usage API
 * Cloud Resource Manager API
 * Google Container Registry API
 
 ## Create a service account for deployment
-
 - Go to [GCP Console](https://console.cloud.google.com/home/dashboard), search for  "Service accounts" from the top search box. or go to: "IAM & Admins" > "Service accounts" from the top-left menu and create a new service account called "deployment"
 - Give the following roles:
 - For `deployment`:
@@ -121,24 +164,12 @@ Search for each of these in the GCP search bar and click enable to enable these 
 - Rename the json key file to `gcp-service.json`
 
 ## Setup Docker Container (Ansible, Docker, Kubernetes)
-
 Rather than each of installing different tools for deployment we will use Docker to build and run a standard container will all required software.
 
-### Download the folder `deployment`
-- Clone this repository
+### Start the `deployment` Docker Container
 - cd into `deployment`
 - Go into `docker-shell.sh` or `docker-shell.bat` and change `GCP_PROJECT` to your project id
 - Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-
-- Check versions of tools:
-```
-gcloud --version
-ansible --version
-kubectl version --client
-```
-
-- Check to make sure you are authenticated to GCP
-- Run `gcloud auth list`
 
 Now you have a Docker container that connects to your GCP and call create VMs, deploy containers all from the command line
 
@@ -185,10 +216,17 @@ The username is `sa_100110341521630214262`
 ansible-playbook deploy-docker-images.yml -i inventory.yml
 ```
 
-# Deploy the Privacy App to K8s Cluster
+
 ------------
 
-## API's to enable in GCP for Project
+# Deploy to Kubernetes Cluster 
+
+## Outline
+1. Enable APIs in GCP
+2. Start Deployment Docker Container
+3. Start a GKE cluster and deploy containers
+
+## Enable APIs in GCP
 Search for each of these in the GCP search bar and click enable to enable these API's
 * Compute Engine API
 * Service Usage API
@@ -197,347 +235,21 @@ Search for each of these in the GCP search bar and click enable to enable these 
 * Kubernetes Engine API
 
 ## Start Deployment Docker Container
-**This step is only required if you have NOT already done this**
+We will use the Docker container hosted in the `/deployment` directory. Follow these steps:
 -  `cd deployment`
 - Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-- Check versions of tools
-`gcloud --version`
-`kubectl version`
-`kubectl version --client`
-
-- Check if make sure you are authenticated to GCP
-- Run `gcloud auth list`
-
-
-# Deploy to Kubernetes Cluster
-We will use ansible to create and deploy the Privacy app into a Kubernetes Cluster
-
-### Create a Deployment Yaml file (Ansible Playbook)
-* Add a file called `deploy-k8s-cluster.yml` inside the deployment folder
-* Add the following script:
-
-```
----
-- name: "Create Kubernetes Cluster and deploy multiple containers"
-  hosts: localhost
-  gather_facts: false
-
-  vars:
-    cluster_name: "privacy-app-cluster"
-    machine_type: "n1-standard-1"
-    machine_disk_size: 30
-    initial_node_count: 2
-
-  tasks:
-  - name: "Create a GKE cluster"
-    google.cloud.gcp_container_cluster:
-      name: "{{cluster_name}}"
-      initial_node_count: "{{ initial_node_count }}"
-      location: "{{ gcp_zone }}"
-      project: "{{ gcp_project }}"
-      release_channel:
-        channel: "UNSPECIFIED"
-      ip_allocation_policy:
-        use_ip_aliases: "yes"
-      auth_kind: "{{ gcp_auth_kind }}"
-      service_account_file: "{{ gcp_service_account_file }}"
-      state: "{{ cluster_state }}"
-    register: cluster
-  
-  - name: "Create a Node Pool"
-    google.cloud.gcp_container_node_pool:
-      name: default-pool
-      initial_node_count: "{{ initial_node_count }}"
-      cluster: "{{ cluster }}"
-      location: "{{ gcp_zone }}"
-      project: "{{ gcp_project }}"
-      config:
-        machine_type: "{{ machine_type }}"
-        image_type: "COS"
-        disk_size_gb: "{{ machine_disk_size }}"
-        oauth_scopes:
-          - "https://www.googleapis.com/auth/devstorage.read_only"
-          - "https://www.googleapis.com/auth/logging.write"
-          - "https://www.googleapis.com/auth/monitoring"
-          - "https://www.googleapis.com/auth/servicecontrol"
-          - "https://www.googleapis.com/auth/service.management.readonly"
-          - "https://www.googleapis.com/auth/trace.append"
-      autoscaling:
-        enabled: "yes"
-        min_node_count: "1"
-        max_node_count: "{{ initial_node_count }}"
-      management:
-        auto_repair: "yes"
-        auto_upgrade: "yes"
-      auth_kind: "{{ gcp_auth_kind }}"
-      service_account_file: "{{ gcp_service_account_file }}"
-      state: "{{ cluster_state }}"
-  
-  - name: "Connect to cluster (update kubeconfig)"
-    shell: "gcloud container clusters get-credentials {{ cluster.name }} --zone {{ gcp_zone }} --project {{ gcp_project }}"
-    when: cluster_state == "present"
-
-  - name: "Create Namespace"
-    k8s:
-      name: "{{cluster_name}}-namespace"
-      api_version: v1
-      kind: Namespace
-      state: present
-    when: cluster_state == "present"
-
-  - name: "Add nginx-ingress helm repo"
-    community.kubernetes.helm_repository:
-      name: nginx-stable
-      repo_url: https://helm.nginx.com/stable
-    when: cluster_state == "present"
-
-  - name: "Install nginx-ingress"
-    community.kubernetes.helm:
-      name: nginx-ingress
-      namespace: "{{cluster_name}}-namespace"
-      chart_ref: nginx-stable/nginx-ingress
-      state: present
-    when: cluster_state == "present"
-
-  - name: "Copy docker tag file"
-    copy:
-      src: .docker-tag
-      dest: .docker-tag
-      mode: 0644
-    when: cluster_state == "present"
-
-  - name: "Get docker tag"
-    shell: "cat .docker-tag"
-    register: tag
-    when: cluster_state == "present"
-
-  - name: "Print tag"
-    debug:
-      var: tag
-    when: cluster_state == "present"
-
-  - name: "Create Persistent Volume Claim"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: PersistentVolumeClaim
-        metadata:
-          name: persistent-pvc
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 5Gi
-    when: cluster_state == "present"
-  
-  - name: Importing credentials as a Secret
-    shell: |
-      #!/bin/bash
-      kubectl create secret generic bucket-reader-key --from-file=bucket-reader.json=../secrets/bucket-reader.json --namespace="{{cluster_name}}-namespace"
-    register: create_secret_op
-    ignore_errors: yes
-    when: cluster_state == "present"
-  
-  - name: "Print Create Secret Output"
-    debug:
-      var: create_secret_op
-    when: cluster_state == "present"
-  
-  - name: "Create Deployment for Frontend"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Deployment
-        metadata:
-          name: frontend
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          selector:
-            matchLabels:
-              run: frontend
-          template:
-            metadata:
-              labels:
-                run: frontend
-            spec:
-              containers:
-              - image: "gcr.io/{{ gcp_project }}/privacy-app-frontend-react:{{ tag.stdout}}"
-                imagePullPolicy: IfNotPresent
-                name: frontend
-                ports:
-                - containerPort: 80
-                  protocol: TCP
-    when: cluster_state == "present"
-
-  - name: "Create Deployment for API Service"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Deployment
-        metadata:
-          name: api
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          selector:
-            matchLabels:
-              run: api
-          template:
-            metadata:
-              labels:
-                run: api
-            spec:
-              volumes:
-                - name: persistent-vol
-                  emptyDir: {}
-                  # persistentVolumeClaim:
-                  #   claimName: persistent-pvc
-                - name: google-cloud-key
-                  secret:
-                    secretName: bucket-reader-key
-              containers:
-              - image: gcr.io/{{ gcp_project }}/privacy-app-api-service:{{ tag.stdout}}
-                imagePullPolicy: IfNotPresent
-                name: api
-                ports:
-                - containerPort: 9000
-                  protocol: TCP
-                volumeMounts:
-                  - name: persistent-vol
-                    mountPath: /persistent
-                    #readOnly: false
-                  - name: google-cloud-key
-                    mountPath: /secrets
-                env:
-                  - name: GOOGLE_APPLICATION_CREDENTIALS
-                    value: /secrets/bucket-reader.json
-                  - name: GCP_PROJECT
-                    value: ac215-project
-                  - name: GCP_ZONE
-                    value: us-central1-a
-    when: cluster_state == "present"
-
-  - name: "Create Service for Frontend"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: frontend
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          ports:
-          - port: 80
-            protocol: TCP
-            targetPort: 80
-          selector:
-            run: frontend
-          type: NodePort
-    when: cluster_state == "present"
-
-  - name: "Create Service for API Service"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: api
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          ports:
-          - port: 9000
-            protocol: TCP
-            targetPort: 9000
-          selector:
-            run: api
-          type: NodePort
-    when: cluster_state == "present"
-
-  - name: Wait for Ingress Nginx to get ready
-    shell: |
-      #!/bin/bash
-      kubectl get service nginx-ingress-nginx-ingress --namespace="{{cluster_name}}-namespace" -ojson | jq -r '.status.loadBalancer.ingress[].ip'
-    register: nginx_ingress
-    delay: 10
-    retries: 20
-    until: nginx_ingress.stderr == ""
-    when: cluster_state == "present"
-
-  - name: Set Nginx Ingress IP
-    set_fact:
-      nginx_ingress_ip: "{{nginx_ingress.stdout}}"
-    when: cluster_state == "present"
-
-  - name: Debug Ingress Nginx IP Address
-    debug:
-      msg: "Ingress Nginx IP Address: {{ nginx_ingress_ip }}"
-    when: cluster_state == "present"
-
-  - name: Debug vars
-    debug:
-      var: nginx_ingress_ip
-      verbosity: 0
-    when: cluster_state == "present"
-
-  - name: "Create Ingress Controller"
-    k8s:
-      state: present
-      definition:
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
-        metadata:
-          name: ingress-resource
-          namespace: "{{cluster_name}}-namespace"
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/ssl-redirect: "false"
-            nginx.org/rewrites: "serviceName=frontend rewrite=/;serviceName=api rewrite=/"
-        spec:
-          rules:
-          - host: "{{ nginx_ingress_ip }}.sslip.io" # Host requires a domain and not just an IP
-            http:
-              paths:
-              - path: /
-                pathType: Prefix
-                backend:
-                  service:
-                    name: frontend
-                    port:
-                      number: 80
-              - path: /api/
-                pathType: Prefix
-                backend:
-                  service:
-                    name: api
-                    port:
-                      number: 9000
-    when: cluster_state == "present"
-```
 
 ### Create & Deploy Cluster
+Run the following command inside of the Deployment Docker container to start deploying to GKE:
 ```
 ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_state=present
 ```
 
-### Try some kubectl commands
-```
-kubectl get all
-kubectl get all --all-namespaces
-kubectl get pods --all-namespaces
-```
-
-```
-kubectl get componentstatuses
-kubectl get nodes
-```
+This takes several minutes. Be patient. Once it is deployed successfully you will see the following output. 
+![img_4.png](readme-images/img_4.png)
 
 ### If you want to shell into a container in a Pod
+Use the following commands to access individual containers in the cluster:
 ```
 kubectl get pods --namespace=privacy-app-cluster-namespace
 kubectl get pod api-5d4878c545-47754 --namespace=privacy-app-cluster-namespace
@@ -545,8 +257,16 @@ kubectl exec --stdin --tty api-5d4878c545-47754 --namespace=privacy-app-cluster-
 ```
 
 ### View the App
+You can access the hosted app by following the steps below
 * Copy the `nginx_ingress_ip` from the terminal from the create cluster command
+![img_3.png](readme-images/img_3.png)
 * Go to `http://<YOUR INGRESS IP>.sslip.io`
-      
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 
+Note that after deploying the cluster successfully, it may still be a few minutes before your containers are up and running. If the Privacy App isn't working immediately after deployment, be patient. It should be working within ten minutes. 
+
+### Check GCP for Deployment Status
+If you want to see the status of your deployment, click on the Navigation Menu on the upper left corner in your GCP Dashboard. Go to "Kubernetes Engine > Services & Ingress". 
+![img_6.png](readme-images/img_6.png)
+
+Here you can see the status of your cluster and its containers.
+![img_5.png](readme-images/img_5.png)

@@ -11,6 +11,9 @@ const APIContext = createContext({
 })
 
 export default function Todos() {
+    const Capitalize = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
     const [isPending, setIsPending] = useState(false);
     const [data, setData] = useState({
         input_text: "Let's begin",
@@ -39,16 +42,6 @@ export default function Todos() {
                 colors: ["#C371FF", "#5F6DFF"]
             }]
     })
-    // {
-    //     input_text: "REACT initialize",
-    //     identifier_score: 0.3,
-    //     identifier_sentences: [],
-    //     location_score: 0.5,
-    //     location_sentences: [],
-    //     third_party_score: 0.8,
-    //     third_party_sentences: []
-    // }
-
 
     const [policy_url, set_url] = React.useState("")
 
@@ -58,7 +51,12 @@ export default function Todos() {
     useEffect(() => {
         setIsPending(true)
         const callApi = async () => {
-            const response = await fetch('/api/analyze', {
+            const response = await fetch(
+                // for local hosting
+                // 'http://localhost:9000/analyze',
+                // for GKE deployment:
+                "/api/analyze",
+                {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -93,11 +91,12 @@ export default function Todos() {
                     <Input
                         pr="4.5rem"
                         type="text"
-                        placeholder="Enter a sentence or paragraph as input text."
-                        aria-label="Enter a sentence or paragraph as input text."
+                        placeholder="Enter any privacy policy URL for analysis. (ex. https://twitter.com/en/privacy)"
+                        aria-label="Enter a URL to a privacy policy for analysis."
                         onChange={handleInput}
                     />
                 </InputGroup>
+                <button type = 'submit'>Click to submit</button>
             </form>
         )
     }
@@ -109,15 +108,16 @@ export default function Todos() {
             <Tabs>
                 <TabList>
                     <Tab>Overview</Tab>
-                    {data.predictions.map(item => <Tab>{item.category.toUpperCase()}</Tab>)}
+                    {data.predictions.map(item => <Tab>{Capitalize(item.category).replaceAll("_", " ")}</Tab>)}
                 </TabList>
 
                 <TabPanel>
 
+
                     <Box style={{backgroundColor: "#FFFFFF"}}>
 
-                        <h2 style={{color: "white"}}>Overview</h2>
-
+                        <h2 style={{color: "Black"}}>Overview</h2>
+                        The scores you see represent how confident we are that the privacy policy you’ve entered tracks information in each category on a scale from 0 to 1. The higher the score, the more likely that the service tracks user data in that category. For details of how these scores are calculated, see our Medium post.
                         <Text><font color="#00FF00">URL:</font> {data.input_text}</Text>
 
                         <Stack direction="row">
@@ -143,33 +143,6 @@ export default function Todos() {
                                        sentences={item.sentences}/>
                     </TabPanel>
                 )}
-
-                {/*<TabPanel>*/}
-                {/*    <TabPanelMaker*/}
-                {/*        title="Am I being tracked?"*/}
-                {/*        colors={["#FFC371", "#FF5F6D"]}*/}
-                {/*        score={data.identifier_score}*/}
-                {/*        sentences={data.identifier_sentences}*/}
-                {/*    />*/}
-                {/*</TabPanel>*/}
-
-                {/*<TabPanel>*/}
-                {/*    <TabPanelMaker*/}
-                {/*        title="Do they know where I am?"*/}
-                {/*        colors={["#C3FF71", "#5FFF6D"]}*/}
-                {/*        score={data.location_score}*/}
-                {/*        sentences={data.location_sentences}*/}
-                {/*    />*/}
-                {/*</TabPanel>*/}
-
-                {/*<TabPanel>*/}
-                {/*    <TabPanelMaker*/}
-                {/*        title="Is my data shared with others?"*/}
-                {/*        colors={["#C371FF", "#5F6DFF"]}*/}
-                {/*        score={data.third_party_score}*/}
-                {/*        sentences={data.third_party_sentences}*/}
-                {/*    />*/}
-                {/*</TabPanel>*/}
             </Tabs>
             ]
         </Stack>
@@ -188,17 +161,3 @@ export default function Todos() {
         </div>
     )
 }
-//   return (
-//       <div>
-//           <APIContext.Provider value={{data}}>
-//               <AnalyzePolicy />
-//               <Stack spacing={1}>
-//
-//                   [<b>{data.input_text}: {data.identifier_score}</b>, ]+{data.identifier_sentences.map(item => (<b>{item}</b>))}
-//               </Stack>
-//           </APIContext.Provider>
-//       </div>
-//   )
-// }
-
-
