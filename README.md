@@ -49,42 +49,30 @@ Project Organization and Key Components
     - demo_app.py -> FastAPI module for serving model inferences                                               
     - `api-service/Back_End/Inference_Engine.py` -> builds ensemble model using Demo_Model_Weights           
                                                                                                    
-- Demo_frontend: Contains files for the frontend as a web app
+- frontend-react: Contains files for the frontend as a web app
     - Todos.jsx -> React Component that calls the API using a URL as input and displays the response with visualizations                          
     - TabPanelMaker.jsx -> Creates a tab per category of analysis (IDENTIFIERS, LOCATION, 3RD_PARTY, CONTACTS, etc.)
       
 --------
 
       .
-      ├── LICENSE
-      ├── Makefile
-      ├── README.md
+      ├── deployment #conains files for configuring deployment to GCP GKE
+      ├── api-service # conains files for the API backend prototype and demo
+      ├── frontend-react #contains files for the frontend prototype and demo
       ├── models
       ├── notebooks
       │   ├── Fine Tuning Experiments
       ├── Pipeline
       │   ├── Labeled_Data_Pipeline.py #Creates training data from APP350 Dataset
       │   ├── Create_Unlabeled_Dataset.py #Creates fine-tuning data via web-scraping
-      │   ├── Training_Data_Piepline.py #Encodes text data for training
-      ├── Demo # conains files for the backend prototype and demo to run locally
-      │   ├── 
-      ├── Demo_Frontend #conains files for the frontend prototype and demo to run locally
-      │   ├── Fine Tuning Experiments
+      │   ├── Training_Data_Piepline.py #Encodes text data for training      │   ├── Fine Tuning Experiments
       ├── notebooks
       │   ├── Fine Tuning Experiments
-      ├── references
-      ├── requirements.txt
-      ├── setup.py
-      ├── src
-      │   ├── __init__.py
-      │   └── build_features.py
       ├── submissions
-      │   ├── milestone1_groupname
-      │   ├── milestone2_groupname
-      ├── api-service # conains files for the backend prototype and demo to run in GCP GKE
-      ├── frontend-react #conains files for the frontend prototype and demo to run GCP GKE
-      ├── deployment #conains files for configuring deployment to GCP GKE
-      └── test_project.py
+      │   ├── Milestone_2_PrivacyPolicyReportCard
+      │   ├── Milestone_4_PrivacyPolicyReportCard
+      ├── LICENSE
+      └── README.md
 
 # Privacy App - Hosting Locally
 This section describes how to run the Privacy App on your local machine using Docker containers. After these steps, you will have the Privacy App running locally via two Docker containers: the API service backend and the React frontend. Make sure you have Docker installed on your machine before you begin. 

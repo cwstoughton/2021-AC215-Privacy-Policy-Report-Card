@@ -133,3 +133,5 @@ dmypy.json
 /Data
 .idea/
 /secrets
+/api-service/Back_End/component_models
+*node_modules/*
