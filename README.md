@@ -65,7 +65,7 @@ Project Organization and Key Components
       ├── Pipeline
       │   ├── Labeled_Data_Pipeline.py #Creates training data from APP350 Dataset
       │   ├── Create_Unlabeled_Dataset.py #Creates fine-tuning data via web-scraping
-      │   ├── Training_Data_Piepline.py #Encodes text data for training      │   ├── Fine Tuning Experiments
+      │   ├── Training_Data_Piepline.py #Encodes text data for training
       ├── notebooks
       │   ├── Fine Tuning Experiments
       ├── submissions
